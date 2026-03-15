@@ -8,8 +8,8 @@ global.special_quests = init_special_quests();
 global.active_quests = [];
 
 global.stone_level = StoneLevel.Crude;
-global.stone_charge = 10;
-global.stone_max_charge = 10;
+global.stone_charge = 12;
+global.stone_max_charge = 12;
 global.game_won = false;
 global.game_lost = false;
 
@@ -26,20 +26,16 @@ global.font_book = fnt_book;
 global.font_small = fnt_small;
 global.font_title = fnt_title;
 
-// test materials
-inventory_add(Material.Sand, 2);
-inventory_add(Material.Water, 2);
-inventory_add(Material.Flowers, 2);
-inventory_add(Material.Sulfur, 2);
-inventory_add(Material.Carbon, 2);
-inventory_add(Material.Iron, 1);
+//start materials
+inventory_add(Material.Saltwater, 2);
+inventory_add(Material.Fungi, 2);
+inventory_add(Material.Mercury, 3);
+inventory_add(Material.Sulfur, 3);
+inventory_add(Material.Carbon, 3);
 inventory_add(Material.Milk, 1);
-inventory_add(Material.Silver, 1);
-inventory_add(Material.Mercury, 1);
+inventory_add(Material.Flowers, 1);
 inventory_add(Material.SoulTiny, 1);
-inventory_add(Material.Saltwater, 1);
-inventory_add(Material.FaerieJar, 1);
-inventory_add(Material.Fungi, 1);
+inventory_add(Material.Water, 1);
 
 // activate tutorial quest
 array_push(global.active_quests, global.special_quests[0]);
@@ -73,8 +69,19 @@ global.game_state = "title";
 global.title_text = "PHILOSOPHER'S STONE";
 global.title_subtext = "Equivalent Exchange";
 global.title_prompt = "Press SPACE to begin";
+global.title_warning = "If your charge reaches zero, the run ends.";
+global.title_goal = "Make a Philosopher's Stone to win.";
+
 
 global.gameover_title = "The Philosopher's Stone Crumbled";
 global.gameover_prompt = "Press R to restart";
 
 global.title_help = "Q/R/M = Pages   1-5 = Alchemy   Right click = Remove ingredient";
+
+//win
+global.win_title = "You forged the Master Stone";
+global.win_prompt = "Click to restart";
+
+
+audio_play_sound(bgm, 1, true);
+audio_sound_gain(bgm, 0.5, 0);

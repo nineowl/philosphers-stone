@@ -19,6 +19,13 @@ if (global.game_state == "gameover") {
     exit;
 }
 
+if (global.game_state == "win") {
+    if (keyboard_check_pressed(ord("R")) || mouse_check_button_pressed(mb_left)) {
+        room_restart();
+    }
+    exit;
+}
+
 
 // dialogue typewriter reset when line changes
 if (global.npc_line != ui_last_dialog_line) {
@@ -34,13 +41,18 @@ if (global.dialog_visible && array_length(global.active_quests) > 0) {
     if (dq.stage == "offer" || dq.stage == "completed") {
         ui_dialog_char_timer += ui_dialog_char_speed;
 
-        if (ui_dialog_char_timer >= 1) {
-            ui_dialog_char_timer = 0;
+		if (ui_dialog_char_timer >= 1) {
+		    ui_dialog_char_timer = 0;
 
-            if (ui_dialog_char_index < string_length(global.npc_line)) {
-                ui_dialog_char_index += 1;
-            }
-        }
+		    if (ui_dialog_char_index < string_length(global.npc_line)) {
+		        ui_dialog_char_index += 1;
+
+		        var _char = string_char_at(global.npc_line, ui_dialog_char_index);
+		        if (_char != " " && _char != "." && _char != "," && _char != "!" && _char != "?") {
+		            audio_play_sound(snd_textblip, 1, false);
+		        }
+		    }
+		}
     }
 }
 
@@ -155,9 +167,9 @@ switch (book_tab) {
         max_scroll = 0;
     break;
 
-    case 1:
-        max_scroll = max(0, array_length(global.recipes) - ui_page_rows_visible);
-    break;
+	case 1:
+	    max_scroll = max(0, discovered_recipe_count() - ui_page_rows_visible);
+	break;
 
     case 2:
         max_scroll = max(0, inventory_nonzero_count() - ui_page_rows_visible);
@@ -413,21 +425,21 @@ if (mouse_check_button_pressed(mb_left)) {
         exit;
     }
 
-    // perform alchemy by clicking right page
-    if (point_in_rectangle(mx, my, ui_page_right_x1, ui_page_right_y1, ui_page_right_x2, ui_page_right_y2)) {
-        if (global.selected_action == AlchemyAction.Rewind) {
-            if (global.selected_failure_index >= 0) {
-                rewind_failure(global.selected_failure_index);
-                global.selected_failure_index = -1;
-            } else {
-                global.last_message = "Select a failure first.";
-            }
-        } else {
-            try_alchemy(global.selected_action, global.selected_materials);
-            global.selected_materials = [];
-        }
-        exit;
-    }
+	// perform alchemy by clicking right page
+	if (book_tab != 1 && point_in_rectangle(mx, my, ui_page_right_x1, ui_page_right_y1, ui_page_right_x2, ui_page_right_y2)) {
+	    if (global.selected_action == AlchemyAction.Rewind) {
+	        if (global.selected_failure_index >= 0) {
+	            rewind_failure(global.selected_failure_index);
+	            global.selected_failure_index = -1;
+	        } else {
+	            global.last_message = "Select a failure first.";
+	        }
+	    } else {
+	        try_alchemy(global.selected_action, global.selected_materials);
+	        global.selected_materials = [];
+	    }
+	    exit;
+	}
 
     // accepting and ending quests
     if (book_tab == 0 && array_length(global.active_quests) > 0) {

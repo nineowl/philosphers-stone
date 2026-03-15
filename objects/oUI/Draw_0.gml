@@ -19,9 +19,10 @@ if (global.game_state == "title") {
     draw_text(room_width * 0.5, room_height * 0.45, global.title_subtext);
 
     draw_set_font(global.font_small);
-    draw_text(room_width * 0.5, room_height * 0.62, global.title_prompt);
-	
-	draw_text(room_width * 0.5, room_height * 0.70, global.title_help);
+	draw_text(room_width * 0.5, room_height * 0.56, global.title_prompt);
+	draw_text(room_width * 0.5, room_height * 0.64, global.title_help);
+	draw_text(room_width * 0.5, room_height * 0.72, global.title_warning);
+	draw_text(room_width * 0.5, room_height * 0.80, global.title_goal);
 
     draw_set_halign(fa_left);
     draw_set_valign(fa_top);
@@ -53,6 +54,28 @@ if (global.game_state == "gameover") {
     exit;
 }
 
+
+//win
+if (global.game_state == "win") {
+    draw_set_alpha(0.85);
+    draw_set_color(c_black);
+    draw_rectangle(0, 0, room_width, room_height, false);
+
+    draw_set_alpha(1);
+    draw_set_halign(fa_center);
+    draw_set_valign(fa_middle);
+
+    draw_set_font(global.font_title);
+    draw_set_color(c_white);
+    draw_text(room_width * 0.5, room_height * 0.42, global.win_title);
+
+    draw_set_font(global.font_small);
+    draw_text(room_width * 0.5, room_height * 0.58, global.win_prompt);
+
+    draw_set_halign(fa_left);
+    draw_set_valign(fa_top);
+    exit;
+}
 
 // philosopher stone
 draw_sprite_ext(
@@ -131,57 +154,60 @@ switch (book_tab) {
 
     break;
 
-    case 1:
-        draw_set_font(global.font_book);
-        draw_set_color(c_black);
+	case 1:
+	    draw_set_font(global.font_book);
+	    draw_set_color(c_black);
 
-        var recipe_draw_index = 0;
+	    var recipe_draw_index = 0;
 
-        for (var i = 0; i < array_length(global.recipes); i++) {
-            var recipe = global.recipes[i];
-            if (!recipe.discovered) continue;
+	    for (var i = 0; i < array_length(global.recipes); i++) {
+	        var recipe = global.recipes[i];
+	        if (!recipe.discovered) continue;
 
-            if (recipe_draw_index < ui_page_scroll) {
-                recipe_draw_index++;
-                continue;
-            }
+	        if (recipe_draw_index < ui_page_scroll) {
+	            recipe_draw_index++;
+	            continue;
+	        }
 
-            var row_y = ui_page_content_y + (recipe_draw_index - ui_page_scroll) * ui_page_list_row_h;
-            if (row_y > ui_page_content_y + ui_page_content_h) break;
+	        var row_y = ui_page_content_y + (recipe_draw_index - ui_page_scroll) * ui_page_list_row_h;
+	        if (row_y > ui_page_content_y + ui_page_content_h) break;
 
-            var out_mat = recipe.outputs[0].material;
+	        var out_mat = recipe.outputs[0].material;
 
-            if (global.hovered_recipe == i) {
-                draw_rectangle(ui_page_content_x, row_y, ui_page_content_x + ui_page_content_w, row_y + ui_page_list_row_h - 2, true);
-                draw_set_color(c_white);
-                draw_text(ui_page_content_x + 2, row_y + 2, global.material_data[out_mat].name);
-                draw_set_color(c_black);
-            } else {
-                draw_text(ui_page_content_x, row_y, global.material_data[out_mat].name);
-            }
+	        if (global.hovered_recipe == i) {
+	            draw_rectangle(ui_page_content_x, row_y, ui_page_content_x + ui_page_content_w, row_y + ui_page_list_row_h - 2, true);
+	            draw_set_color(c_white);
+	            draw_text(ui_page_content_x + 2, row_y + 2, global.material_data[out_mat].name);
+	            draw_set_color(c_black);
+	        } else {
+	            draw_text(ui_page_content_x, row_y, global.material_data[out_mat].name);
+	        }
 
-            recipe_draw_index++;
-        }
+	        recipe_draw_index++;
+	    }
 
-        if (global.hovered_recipe != -1) {
-            var r = global.recipes[global.hovered_recipe];
-            var detail_y = ui_page_content_y + 100;
+	    // recipe details on right page
+	    if (global.hovered_recipe != -1) {
+	        var r = global.recipes[global.hovered_recipe];
 
-            draw_set_font(global.font_small);
-            draw_set_color(c_black);
+	        var recipe_right_x = ui_page_right_x1 + 18;
+	        var recipe_right_y = ui_page_right_y1 + 20;
 
-            draw_text(ui_page_content_x, detail_y, "Action: " + action_name(r.action));
-            draw_text(ui_page_content_x, detail_y + 14, "Ingredients:");
+	        draw_set_font(global.font_small);
+	        draw_set_color(c_black);
 
-            for (var k = 0; k < array_length(r.inputs); k++) {
-                draw_text(
-                    ui_page_content_x + 8,
-                    detail_y + 28 + k * 12,
-                    "- " + global.material_data[r.inputs[k]].name
-                );
-            }
-        }
-    break;
+	        draw_text(recipe_right_x, recipe_right_y, "Action: " + action_name(r.action));
+	        draw_text(recipe_right_x, recipe_right_y + 16, "Ingredients:");
+
+	        for (var k = 0; k < array_length(r.inputs); k++) {
+	            draw_text(
+	                recipe_right_x + 8,
+	                recipe_right_y + 32 + k * 14,
+	                "- " + global.material_data[r.inputs[k]].name
+	            );
+	        }
+	    }
+	break;
 
 	case 2:
 	    draw_set_font(global.font_book);
@@ -258,39 +284,41 @@ switch (book_tab) {
 }
 
 // selected materials in middle
-for (var s = 0; s < array_length(global.selected_materials); s++) {
-    var sel_mat = global.selected_materials[s];
-    var sel_data = global.material_data[sel_mat];
+if (book_tab != 1) {
+    for (var s = 0; s < array_length(global.selected_materials); s++) {
+        var sel_mat = global.selected_materials[s];
+        var sel_data = global.material_data[sel_mat];
 
-    var draw_x = ui_alchemy_center_x;
-    var draw_y = ui_alchemy_center_y;
+        var draw_x = ui_alchemy_center_x;
+        var draw_y = ui_alchemy_center_y;
 
-    switch (s) {
-        case 0:
-            draw_y = ui_alchemy_center_y - ui_alchemy_slot_gap;
-        break;
+        switch (s) {
+            case 0:
+                draw_y = ui_alchemy_center_y - ui_alchemy_slot_gap;
+            break;
 
-        case 1:
-            draw_x = ui_alchemy_center_x - ui_alchemy_slot_gap;
-            draw_y = ui_alchemy_center_y + 4;
-        break;
+            case 1:
+                draw_x = ui_alchemy_center_x - ui_alchemy_slot_gap;
+                draw_y = ui_alchemy_center_y + 4;
+            break;
 
-        case 2:
-            draw_x = ui_alchemy_center_x + ui_alchemy_slot_gap;
-            draw_y = ui_alchemy_center_y + 4;
-        break;
+            case 2:
+                draw_x = ui_alchemy_center_x + ui_alchemy_slot_gap;
+                draw_y = ui_alchemy_center_y + 4;
+            break;
 
-        case 3:
-            draw_y = ui_alchemy_center_y + ui_alchemy_slot_gap;
-        break;
-    }
+            case 3:
+                draw_y = ui_alchemy_center_y + ui_alchemy_slot_gap;
+            break;
+        }
 
-    if (!is_undefined(sel_data.spr)) {
-        draw_sprite(sel_data.spr, sel_data.frame, draw_x, draw_y);
-    } else {
-        draw_set_font(global.font_small);
-        draw_set_color(c_black);
-        draw_text(draw_x - 12, draw_y - 6, sel_data.name);
+        if (!is_undefined(sel_data.spr)) {
+            draw_sprite(sel_data.spr, sel_data.frame, draw_x, draw_y);
+        } else {
+            draw_set_font(global.font_small);
+            draw_set_color(c_black);
+            draw_text(draw_x - 12, draw_y - 6, sel_data.name);
+        }
     }
 }
 

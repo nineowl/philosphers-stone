@@ -98,9 +98,9 @@ ui_page_right_y2 = 278;
 // This lives inside the quest page
 // -------------------------
 ui_turnin_x1 = ui_page_content_x+4;
-ui_turnin_y1 = ui_page_content_y + 100;
+ui_turnin_y1 = ui_page_content_y + 120;
 ui_turnin_x2 = ui_page_content_x + 56;
-ui_turnin_y2 = ui_page_content_y + 118;
+ui_turnin_y2 = ui_page_content_y + 138;
 
 // -------------------------
 // FAERIE JAR
@@ -159,9 +159,9 @@ ui_last_dialog_line = "";
 
 //quest accept button
 ui_accept_x1 = ui_page_content_x + 4;
-ui_accept_y1 = ui_page_content_y + 100;
+ui_accept_y1 = ui_page_content_y + 120;
 ui_accept_x2 = ui_page_content_x + 56;
-ui_accept_y2 = ui_page_content_y + 118;
+ui_accept_y2 = ui_page_content_y + 138;
 
 
 //stone charging button

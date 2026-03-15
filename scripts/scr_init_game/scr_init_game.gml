@@ -173,7 +173,7 @@ function init_material_data() {
 		name: "Ice Cream",
 		desc: "Quick, before it melts!",
 	    spr: sMaterials,
-	    frame: 0
+	    frame: 17
 	};
     data[Material.Homunculus] = { 
 		name: "Homunculus",
@@ -366,6 +366,16 @@ function init_recipe_data() {
         ],
 		discovered: false
     });
+	
+	//Philosopher's Stone
+	array_push(recipes, {
+    action: AlchemyAction.Combine,
+	    inputs: [Material.Heart, Material.Homunculus, Material.SoulEminent],
+	    outputs: [
+	        { material: Material.PhilosopherStone, amount: 1 }
+	    ],
+	    discovered: false
+	});
 
 
     // ----------------------

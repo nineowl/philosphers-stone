@@ -72,27 +72,36 @@ function try_alchemy(_action, _inputs) {
         inventory_remove(_inputs[i], 1);
     }
 
-	var recipe_index = find_recipe_index(_action, _inputs);
+    var recipe_index = find_recipe_index(_action, _inputs);
 
-	if (recipe_index == -1) {
-	    array_push(global.failure_items, {
-	        materials: _inputs
-	    });
+    if (recipe_index == -1) {
+        array_push(global.failure_items, {
+            materials: _inputs
+        });
 
-	    global.last_message = "Alchemy failed.";
-		audio_play_sound(snd_alchemy_fail, 1, false);
-	    return false;
-	}
+        global.last_message = "Alchemy failed.";
+        audio_play_sound(snd_alchemy_fail, 1, false);
+        return false;
+    }
 
-	var recipe = global.recipes[recipe_index];
-	recipe.discovered = true;
-	global.recipes[recipe_index] = recipe;
+    var recipe = global.recipes[recipe_index];
+    recipe.discovered = true;
+    global.recipes[recipe_index] = recipe;
 
-	inventory_add_outputs(recipe.outputs);
-	global.last_message = "Alchemy succeeded.";
-	audio_play_sound(snd_alchemy_success, 1, false);
-	return true;
+    inventory_add_outputs(recipe.outputs);
+    global.last_message = "Alchemy succeeded.";
+    audio_play_sound(snd_alchemy_success, 1, false);
 
+    // win condition
+    for (var j = 0; j < array_length(recipe.outputs); j++) {
+        if (recipe.outputs[j].material == Material.PhilosopherStone) {
+            global.game_won = true;
+            global.game_state = "win";
+            break;
+        }
+    }
+
+    return true;
 }
 
 function rewind_failure(_failure_index) {
@@ -145,4 +154,15 @@ function recharge_stone_with_heart() {
     global.last_message = "Stone recharged.";
     audio_play_sound(snd_recharge, 1, false);
     return true;
+}
+
+
+function discovered_recipe_count() {
+    var count = 0;
+
+    for (var i = 0; i < array_length(global.recipes); i++) {
+        if (global.recipes[i].discovered) count++;
+    }
+
+    return count;
 }
