@@ -51,14 +51,13 @@ global.hovered_recipe = -1;
 
 
 
-//npc
+// npc / dialogue
 global.npc_present = true;
 global.dialog_visible = true;
 global.npc_name = "Customer";
 global.npc_line = "Hello. I need a wine glass for tonight's festivities.";
 global.current_quest_index = 0;
-//global.quest_stage = "offer";
-global.npc_sprite = noone;
+global.npc_portrait_sprite = sNPC;
 
 //quests
 

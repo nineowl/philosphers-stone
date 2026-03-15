@@ -4,47 +4,51 @@ function init_special_quests() {
     array_push(quests, {
         id: "tutorial_wine_glass",
         title: "Wine Glasses for a Party",
-		desc: "A customer needs a proper glass for the evening festivities.",
+        desc: "A customer needs a proper glass for the evening festivities.",
         request_material: Material.WineGlass,
         request_amount: 1,
-		provided_materials: [
+        provided_materials: [
             { material: Material.Saltwater, amount: 1 }
         ],
         rewards: [
             { type: "material", material: Material.Grapes, amount: 1 }
         ],
-		stage: "offer",
+        portrait_frame: 0,
+        stage: "offer",
         completed: false
     });
-	
-	array_push(quests, {
+
+    array_push(quests, {
         id: "wine_job",
         title: "Wine!",
-		desc: "Help us revive this party!",
+        desc: "Help us revive this party!",
         request_material: Material.Wine,
         request_amount: 1,
-		provided_materials: [],
+        provided_materials: [],
         rewards: [
             { type: "material", material: Material.Blood, amount: 1 }
         ],
-		stage: "offer",
+        portrait_frame: 1,
+        stage: "offer",
         completed: false
     });
-		array_push(quests, {
+
+    array_push(quests, {
         id: "making_money_1",
         title: "Silver Request",
-		desc: "There's a werewolf about and we need silver to kill it. We only have iron though.",
+        desc: "There's a werewolf about and we need silver to kill it. We only have iron though.",
         request_material: Material.Silver,
         request_amount: 1,
-		provided_materials: [ { material: Material.Iron, amount: 1 }],
+        provided_materials: [
+            { material: Material.Iron, amount: 1 }
+        ],
         rewards: [
             { type: "material", material: Material.Heart, amount: 1 }
         ],
-		stage: "offer",
+        portrait_frame: 2,
+        stage: "offer",
         completed: false
     });
-	
-	
 
     return quests;
 }
@@ -107,5 +111,11 @@ function advance_to_next_quest() {
         global.npc_name = "Customer";
         global.npc_line = "I have another request for you.";
         global.dialog_visible = true;
+
+        with (oUI) {
+            ui_dialog_char_index = 0;
+            ui_dialog_char_timer = 0;
+            ui_last_dialog_line = "";
+        }
     }
 }

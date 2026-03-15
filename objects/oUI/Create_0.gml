@@ -38,6 +38,10 @@ if (instance_exists(oAlchemyCenterMarker)) {
 
 ui_alchemy_slot_gap = 18;
 
+
+
+
+
 // -------------------------
 // PHILOSOPHER STONE
 // -------------------------
@@ -57,7 +61,7 @@ ui_stone_scale = 2;
 ui_action_arrow_left_x = 495;
 ui_action_arrow_left_y = 280;
 
-ui_action_arrow_right_x = 580;
+ui_action_arrow_right_x = 565;
 ui_action_arrow_right_y = 280;
 
 ui_action_arrow_w = 16;
@@ -119,11 +123,39 @@ ui_hover_name_y = 280;
 ui_hover_desc_x = 320;
 ui_hover_desc_y = 304;
 
-//Textbox
-ui_dialog_x1 = 40;
-ui_dialog_y1 = 285;
-ui_dialog_x2 = 280;
-ui_dialog_y2 = 345;
+// -------------------------
+// NPC PORTRAIT + DIALOGUE ANCHORS
+// -------------------------
+if (instance_exists(oNPCMarker)) {
+    ui_portrait_x = oNPCMarker.x;
+    ui_portrait_y = oNPCMarker.y;
+} else {
+    ui_portrait_x = 34;
+    ui_portrait_y = 286;
+}
+
+if (instance_exists(oDialogTextMarker)) {
+    ui_dialog_text_x = oDialogTextMarker.x;
+    ui_dialog_text_y = oDialogTextMarker.y;
+} else {
+    ui_dialog_text_x = 104;
+    ui_dialog_text_y = 292;
+}
+
+// portrait scale
+ui_portrait_scale = 2;
+
+// dialogue box rectangle built around text anchor
+ui_dialog_x1 = ui_dialog_text_x - 8;
+ui_dialog_y1 = ui_dialog_text_y - 6;
+ui_dialog_x2 = ui_dialog_text_x + 178;
+ui_dialog_y2 = ui_dialog_text_y + 54;
+
+// Typewriter text
+ui_dialog_char_index = 0;
+ui_dialog_char_speed = 0.5;
+ui_dialog_char_timer = 0;
+ui_last_dialog_line = "";
 
 //quest accept button
 ui_accept_x1 = ui_page_content_x + 4;
@@ -148,3 +180,7 @@ ui_quest_arrow_right_y = ui_page_content_y - 14;
 
 ui_quest_arrow_w = 12;
 ui_quest_arrow_h = 12;
+
+//arrow sprite
+ui_arrow_sprite = sArrow;
+ui_arrow_scale = 1;

@@ -1,9 +1,41 @@
 var mx = mouse_x;
 var my = mouse_y;
 
+// dialogue typewriter reset when line changes
+if (global.npc_line != ui_last_dialog_line) {
+    ui_last_dialog_line = global.npc_line;
+    ui_dialog_char_index = 0;
+    ui_dialog_char_timer = 0;
+}
+
+// typewriter progress
+if (global.dialog_visible && array_length(global.active_quests) > 0) {
+    var dq = global.active_quests[global.current_quest_index];
+
+    if (dq.stage == "offer") {
+        ui_dialog_char_timer += ui_dialog_char_speed;
+
+        if (ui_dialog_char_timer >= 1) {
+            ui_dialog_char_timer = 0;
+
+            if (ui_dialog_char_index < string_length(global.npc_line)) {
+                ui_dialog_char_index += 1;
+            }
+        }
+    }
+}
+
 // reset hover every step
 global.hovered_material = -1;
 global.hovered_recipe = -1;
+
+// sync book frame to current alchemy action
+if (instance_exists(oBook)) {
+    with (oBook) {
+        image_index = global.selected_action;
+    }
+}
+
 
 
 // -------------------------
@@ -168,6 +200,18 @@ if (book_tab == 1) {
 // LEFT CLICK HANDLING
 // -------------------------
 if (mouse_check_button_pressed(mb_left)) {
+
+	// click dialogue box to instantly reveal full line
+	if (global.dialog_visible && array_length(global.active_quests) > 0) {
+	    var dq = global.active_quests[global.current_quest_index];
+
+	    if (dq.stage == "offer") {
+	        if (point_in_rectangle(mx, my, ui_dialog_x1, ui_dialog_y1, ui_dialog_x2, ui_dialog_y2)) {
+	            ui_dialog_char_index = string_length(global.npc_line);
+	            exit;
+	        }
+	    }
+	}
 
     // action arrows
     if (point_in_rectangle(mx, my,

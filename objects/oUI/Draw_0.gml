@@ -1,7 +1,7 @@
 if (!variable_global_exists("stone_charge")) exit;
 
 // background first
-draw_sprite(bg_main, global.selected_action, 0, 0);
+//draw_sprite(bg_main, global.selected_action, 0, 0);//no longer used
 
 // philosopher stone
 draw_sprite_ext(
@@ -15,6 +15,10 @@ draw_sprite_ext(
     c_white,
     1
 );
+
+
+//alchemy page handling:
+
 
 draw_set_halign(fa_left);
 draw_set_valign(fa_top);
@@ -206,10 +210,32 @@ for (var s = 0; s < array_length(global.selected_materials); s++) {
 }
 
 // action arrows + label
+draw_sprite_ext(
+    ui_arrow_sprite,
+    0,
+    ui_action_arrow_left_x,
+    ui_action_arrow_left_y,
+    ui_arrow_scale,
+    ui_arrow_scale,
+    0,
+    c_white,
+    1
+);
+
+draw_sprite_ext(
+    ui_arrow_sprite,
+    1,
+    ui_action_arrow_right_x,
+    ui_action_arrow_right_y,
+    ui_arrow_scale,
+    ui_arrow_scale,
+    0,
+    c_white,
+    1
+);
+
 draw_set_font(global.font_small);
 draw_set_color(c_black);
-draw_text(ui_action_arrow_left_x, ui_action_arrow_left_y, "<");
-draw_text(ui_action_arrow_right_x, ui_action_arrow_right_y, ">");
 draw_text(ui_action_label_x, ui_action_label_y, action_name(global.selected_action));
 
 // Q/R/M
@@ -255,17 +281,38 @@ if (global.dialog_visible && array_length(global.active_quests) > 0) {
     var dq = global.active_quests[global.current_quest_index];
 
     if (dq.stage == "offer") {
-        draw_set_font(global.font_small);
         draw_set_alpha(1);
+
+        // portrait
+        if (global.npc_portrait_sprite != noone) {
+            draw_sprite_ext(
+                global.npc_portrait_sprite,
+                dq.portrait_frame,
+                ui_portrait_x,
+                ui_portrait_y,
+                ui_portrait_scale,
+                ui_portrait_scale,
+                0,
+                c_white,
+                1
+            );
+        }
+
+        // solid dialogue box
         draw_set_color(make_color_rgb(205, 170, 125));
         draw_rectangle(ui_dialog_x1, ui_dialog_y1, ui_dialog_x2, ui_dialog_y2, false);
 
+        // typed text
+        draw_set_font(global.font_small);
         draw_set_color(c_black);
+
+        var visible_text = string_copy(global.npc_line, 1, floor(ui_dialog_char_index));
+
         draw_text(ui_dialog_x1 + 8, ui_dialog_y1 + 6, global.npc_name + ":");
         draw_text_ext(
             ui_dialog_x1 + 8,
             ui_dialog_y1 + 20,
-            global.npc_line,
+            visible_text,
             12,
             (ui_dialog_x2 - ui_dialog_x1) - 16
         );
