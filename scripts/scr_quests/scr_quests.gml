@@ -13,18 +13,34 @@ function init_special_quests() {
         rewards: [
             { type: "material", material: Material.Grapes, amount: 1 }
         ],
+		stage: "offer",
         completed: false
     });
 	
 	array_push(quests, {
-        id: "wine_glass",
+        id: "wine_job",
         title: "Wine!",
+		desc: "Help us revive this party!",
         request_material: Material.Wine,
         request_amount: 1,
 		provided_materials: [],
         rewards: [
             { type: "material", material: Material.Blood, amount: 1 }
         ],
+		stage: "offer",
+        completed: false
+    });
+		array_push(quests, {
+        id: "making_money_1",
+        title: "Silver Request",
+		desc: "There's a werewolf about and we need silver to kill it. We only have iron though.",
+        request_material: Material.Silver,
+        request_amount: 1,
+		provided_materials: [ { material: Material.Iron, amount: 1 }],
+        rewards: [
+            { type: "material", material: Material.Heart, amount: 1 }
+        ],
+		stage: "offer",
         completed: false
     });
 	
@@ -57,11 +73,39 @@ function try_complete_active_quest(_index) {
         if (r.type == "material") {
             inventory_add(r.material, r.amount);
         }
+
+        if (r.type == "recipe") {
+            var recipe = global.recipes[r.recipe_index];
+            recipe.discovered = true;
+            global.recipes[r.recipe_index] = recipe;
+        }
     }
 
-    q.completed = true;
-    global.active_quests[_index] = q;
-
     global.last_message = "Quest completed: " + q.title;
+
+    // remove completed quest from active list
+    array_delete(global.active_quests, _index, 1);
+
+    // clamp current selected quest index
+    if (global.current_quest_index >= array_length(global.active_quests)) {
+        global.current_quest_index = max(0, array_length(global.active_quests) - 1);
+    }
+
+    // add next quest
+    advance_to_next_quest();
+
     return true;
+}
+
+
+
+function advance_to_next_quest() {
+    if (global.next_special_quest_index < array_length(global.special_quests)) {
+        array_push(global.active_quests, global.special_quests[global.next_special_quest_index]);
+        global.next_special_quest_index += 1;
+
+        global.npc_name = "Customer";
+        global.npc_line = "I have another request for you.";
+        global.dialog_visible = true;
+    }
 }

@@ -5,205 +5,205 @@ function init_material_data() {
 		name: "Water",
 		desc: "A common base material used in many transmutations.",
 	    spr: sMaterials,
-	    frame: 0
+	    frame: 10
 	};
     data[Material.Sand] = { 
 		name: "Sand", 
-		desc: "Needs a description.",
+		desc: "Can be made into glass.",
 	    spr: sMaterials,
-	    frame: 0
+	    frame: 20
 	};
     data[Material.Clay] = { 
 		name: "Clay",
-	    desc: "Needs a description.",
+	    desc: "They say God made human's from clay.",
 	    spr: sMaterials,
-	    frame: 0
+	    frame: 22
 	};
     data[Material.Carbon] = { 
 		name: "Carbon",
-	    desc: "Needs a description.",
+	    desc: "The basis for all life.",
 	    spr: sMaterials,
-	    frame: 0
+	    frame: 23
 	};
     data[Material.Sulfur] = { 
 		name: "Sulfur",
-		desc: "Needs a description.",
+		desc: "Strong scent, powerful and foundational.",
 	    spr: sMaterials,
-	    frame: 0
+	    frame: 21
 		};
     data[Material.Mercury] = { 
 		name: "Mercury",
-		desc: "Needs a description.",
+		desc: "Foundational liquid in Alchemy.",
 	    spr: sMaterials,
-	    frame: 0
+	    frame: 12
 	};
     data[Material.Iron] = { 
 		name: "Iron",
-		desc: "Needs a description.",
+		desc: "Reliable and abundant metal.",
 	    spr: sMaterials,
-	    frame: 0
+	    frame: 30
 	};
     data[Material.Silver] = { 
 		name: "Silver",
-		desc: "Needs a description.",
+		desc: "Bright and precious, but tarnishes.",
 	    spr: sMaterials,
-	    frame: 0
+	    frame: 31
 	};
     data[Material.Gold] = { 
 		name: "Gold",
-		desc: "Needs a description.",
+		desc: "Iridiscent, doesn't rust nor tarnish, of great value.",
 	    spr: sMaterials,
-	    frame: 0
+	    frame: 32
 	};
     data[Material.Flowers] = { 
 		name: "Flowers",
-		desc: "Needs a description.",
+		desc: "Beautiful, fragrant.",
 	    spr: sMaterials,
-	    frame: 0
+	    frame: 43
 	};
     data[Material.Fungi] = { 
 		name: "Fungi",
-		desc: "Needs a description.",
+		desc: "Mysterious, symbiotic.",
 	    spr: sMaterials,
-	    frame: 0
+	    frame: 45
 	};
     data[Material.Milk] = { 
 		name: "Milk",
-		desc: "Needs a description.",
+		desc: "High in protein, staple culinary ingredient.",
 	    spr: sMaterials,
-	    frame: 0
+	    frame: 11
 	};
     data[Material.Blood] = { 
 		name: "Blood",
-		desc: "Needs a description.",
+		desc: "Abundant, Taboo, Sacred.",
 	    spr: sMaterials,
-	    frame: 0
+	    frame: 13
 	};
     data[Material.Heart] = { 
 		name: "Heart",
-		desc: "Needs a description.",
+		desc: "Where did this come from?",
 	    spr: sMaterials,
-	    frame: 0
+	    frame: 55
 	};
     data[Material.FaerieJar] = { 
 		name: "Faerie in Jar",
-		desc: "Needs a description.",
+		desc: "Magical, rare and full of life.",
 	    spr: sMaterials,
-	    frame: 0
+	    frame: 51
 	};
     data[Material.SoulTiny] = { 
 		name: "Tiny Soul",
-		desc: "Needs a description.",
+		desc: "Tiny soul trapped in a gem. Likely that of a beggar.",
 	    spr: sMaterials,
-	    frame: 0
+	    frame: 70
 	};
     data[Material.SoulRegular] = { 
 		name: "Regular Soul",
-		desc: "Needs a description.",
+		desc: "Soul trapped in a gem. Smells of forbidden magic",
 	    spr: sMaterials,
-	    frame: 0
+	    frame: 71
 	};
     data[Material.SoulEminent] = { 
 		name: "Eminent Soul",
-		desc: "Needs a description.",
+		desc: "Soul of a pure heart, how cruel.",
 	    spr: sMaterials,
-	    frame: 0
+	    frame: 72
 	};
     data[Material.Saltwater] = { 
 		name: "Saltwater",
-		desc: "Needs a description.",
+		desc: "Taste of the ocean.",
 	    spr: sMaterials,
-	    frame: 0
+	    frame: 1
 	};
     data[Material.Glass] = { 
 		name: "Glass",
-		desc: "Needs a description.",
+		desc: "Clear, hard, and brittle.",
 	    spr: sMaterials,
-	    frame: 0
+	    frame: 62
 	};
     data[Material.WineGlass] = { 
 		name: "Wine Glass",
-		desc: "Needs a description.",
+		desc: "You think I drink straight from the bottle?",
 	    spr: sMaterials,
-	    frame: 0
+	    frame: 63
 	};
     data[Material.Wine] = { 
 		name: "Wine",
-		desc: "Needs a description.",
+		desc: "No party is complete without wine.",
 	    spr: sMaterials,
-	    frame: 0
+	    frame: 65
 	};
 	data[Material.Grapes] = { 
 		name: "Grapes",
-		desc: "Needs a description.",
+		desc: "Tastes better when fed to you.",
 	    spr: sMaterials,
-	    frame: 0
+	    frame: 7
 	};
     data[Material.HealthPotion] = { 
 		name: "Health Potion",
-		desc: "Needs a description.",
+		desc: "Restores your overall health. Even regenerates limbs.",
 	    spr: sMaterials,
-	    frame: 0
+	    frame: 75
 	};
     data[Material.PoisonPotion] = { 
 		name: "Poison Potion",
-		desc: "Needs a description.",
+		desc: "For 'rats'.",
 	    spr: sMaterials,
-	    frame: 0
+	    frame: 76
 	};
     data[Material.AphrodisiacPotion] = { 
 		name: "Aphrodisiac",
-		desc: "Needs a description.",
+		desc: "A little get up and go.",
 	    spr: sMaterials,
-	    frame: 0
+	    frame: 77
 	};
     data[Material.Sword] = { 
 		name: "Sword",
-		desc: "Needs a description.",
+		desc: "I like swords.",
 	    spr: sMaterials,
-	    frame: 0
+	    frame: 15
 	};
     data[Material.Bomb] = { 
 		name: "Bomb",
-		desc: "Needs a description.",
+		desc: "Explosive.",
 	    spr: sMaterials,
-	    frame: 0
+	    frame: 16
 	};
     data[Material.IceCream] = { 
 		name: "Ice Cream",
-		desc: "Needs a description.",
+		desc: "Quick, before it melts!",
 	    spr: sMaterials,
 	    frame: 0
 	};
     data[Material.Homunculus] = { 
 		name: "Homunculus",
-		desc: "Needs a description.",
+		desc: "Hey there little guy.",
 	    spr: sMaterials,
-	    frame: 0
+	    frame: 36
 	};
     data[Material.Diamond] = { 
 		name: "Diamond",
-		desc: "Needs a description.",
+		desc: "Pressure makes diamonds they say.",
 	    spr: sMaterials,
-	    frame: 0
+	    frame: 24
 	};
     data[Material.Amulet] = { 
 		name: "Amulet",
-		desc: "Needs a description.",
+		desc: "Shiny, draws attention to the right places.",
 	    spr: sMaterials,
-	    frame: 0
+	    frame: 25
 	};
     data[Material.Perfume] = { 
 		name: "Perfume",
-		desc: "Needs a description.",
+		desc: "For your stinky coworker.",
 	    spr: sMaterials,
-	    frame: 0
+	    frame: 26
 	};
     data[Material.Chimera] = { 
 		name: "Chimera",
-		desc: "Needs a description.",
+		desc: "Cute, fluffly, vicious.",
 	    spr: sMaterials,
-	    frame: 0
+	    frame: 37
 	};
 
     return data;
@@ -222,7 +222,8 @@ function init_recipe_data() {
         outputs: [
             { material: Material.Water, amount: 1 },
             { material: Material.Sand, amount: 1 }
-        ]
+        ],
+		discovered: true
     });
 
 
@@ -236,7 +237,8 @@ function init_recipe_data() {
         inputs: [Material.Glass],
         outputs: [
             { material: Material.WineGlass, amount: 1 }
-        ]
+        ],
+		discovered: true
     });
 
     // Wine
@@ -245,7 +247,8 @@ function init_recipe_data() {
         inputs: [Material.Water, Material.Grapes, Material.Fungi],
         outputs: [
             { material: Material.Wine, amount: 1 }
-        ]
+        ],
+		discovered: false
     });
 
     // Health Potion
@@ -254,7 +257,8 @@ function init_recipe_data() {
         inputs: [Material.Flowers, Material.Water, Material.SoulTiny],
         outputs: [
             { material: Material.HealthPotion, amount: 1 }
-        ]
+        ],
+		discovered: false
     });
 
     // Poison
@@ -263,7 +267,8 @@ function init_recipe_data() {
         inputs: [Material.Water, Material.Fungi],
         outputs: [
             { material: Material.PoisonPotion, amount: 1 }
-        ]
+        ],
+		discovered: false
     });
 
     // Aphrodisiac
@@ -272,7 +277,8 @@ function init_recipe_data() {
         inputs: [Material.Flowers, Material.Wine],
         outputs: [
             { material: Material.AphrodisiacPotion, amount: 1 }
-        ]
+        ],
+		discovered: false
     });
 
     // Sword
@@ -281,7 +287,8 @@ function init_recipe_data() {
         inputs: [Material.Iron, Material.Carbon],
         outputs: [
             { material: Material.Sword, amount: 1 }
-        ]
+        ],
+		discovered: false
     });
 
     // Bomb
@@ -290,7 +297,8 @@ function init_recipe_data() {
         inputs: [Material.Sulfur, Material.Carbon],
         outputs: [
             { material: Material.Bomb, amount: 1 }
-        ]
+        ],
+		discovered: false
     });
 
     // Ice Cream
@@ -299,7 +307,8 @@ function init_recipe_data() {
         inputs: [Material.Milk, Material.Flowers],
         outputs: [
             { material: Material.IceCream, amount: 1 }
-        ]
+        ],
+		discovered: false
     });
 
     // Homunculus
@@ -308,7 +317,8 @@ function init_recipe_data() {
         inputs: [Material.SoulRegular, Material.Heart, Material.Blood, Material.Clay],
         outputs: [
             { material: Material.Homunculus, amount: 1 }
-        ]
+        ],
+		discovered: false
     });
 
     // Diamond
@@ -317,7 +327,8 @@ function init_recipe_data() {
         inputs: [Material.Carbon],
         outputs: [
             { material: Material.Diamond, amount: 1 }
-        ]
+        ],
+		discovered: false
     });
 
     // Amulet
@@ -326,7 +337,8 @@ function init_recipe_data() {
         inputs: [Material.Iron, Material.Diamond],
         outputs: [
             { material: Material.Amulet, amount: 1 }
-        ]
+        ],
+		discovered: false
     });
 
     // Perfume
@@ -335,7 +347,8 @@ function init_recipe_data() {
         inputs: [Material.Water, Material.Flowers],
         outputs: [
             { material: Material.Perfume, amount: 1 }
-        ]
+        ],
+		discovered: false
     });
 
     // Chimera
@@ -344,7 +357,8 @@ function init_recipe_data() {
         inputs: [Material.Blood, Material.Heart, Material.SoulEminent, Material.Sulfur],
         outputs: [
             { material: Material.Chimera, amount: 1 }
-        ]
+        ],
+		discovered: false
     });
 
 
@@ -358,7 +372,8 @@ function init_recipe_data() {
         inputs: [Material.Silver, Material.Mercury],
         outputs: [
             { material: Material.Gold, amount: 1 }
-        ]
+        ],
+		discovered: false
     });
 
     // Silver
@@ -367,7 +382,8 @@ function init_recipe_data() {
         inputs: [Material.Iron, Material.Mercury],
         outputs: [
             { material: Material.Silver, amount: 1 }
-        ]
+        ],
+		discovered: false
     });
 
     // Glass
@@ -376,7 +392,8 @@ function init_recipe_data() {
         inputs: [Material.Sand],
         outputs: [
             { material: Material.Glass, amount: 1 }
-        ]
+        ],
+		discovered: false
     });
 
     // Clay
@@ -385,7 +402,8 @@ function init_recipe_data() {
         inputs: [Material.Sand, Material.Water],
         outputs: [
             { material: Material.Clay, amount: 1 }
-        ]
+        ],
+		discovered: false
     });
 
 

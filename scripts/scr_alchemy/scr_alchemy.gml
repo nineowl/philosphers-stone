@@ -39,7 +39,7 @@ function arrays_equal(_a, _b) {
     return true;
 }
 
-function find_recipe(_action, _inputs) {
+function find_recipe_index(_action, _inputs) {
     var selected_inputs = normalize_material_array(_inputs);
 
     for (var i = 0; i < array_length(global.recipes); i++) {
@@ -50,12 +50,13 @@ function find_recipe(_action, _inputs) {
         var recipe_inputs = normalize_material_array(recipe.inputs);
 
         if (arrays_equal(selected_inputs, recipe_inputs)) {
-            return recipe;
+            return i;
         }
     }
 
-    return undefined;
+    return -1;
 }
+
 
 function try_alchemy(_action, _inputs) {
     if (global.game_lost || global.game_won) return false;
@@ -71,20 +72,25 @@ function try_alchemy(_action, _inputs) {
         inventory_remove(_inputs[i], 1);
     }
 
-    var recipe = find_recipe(_action, _inputs);
+	var recipe_index = find_recipe_index(_action, _inputs);
 
-    if (is_undefined(recipe)) {
-        array_push(global.failure_items, {
-            materials: _inputs
-        });
+	if (recipe_index == -1) {
+	    array_push(global.failure_items, {
+	        materials: _inputs
+	    });
 
-        global.last_message = "Alchemy failed.";
-        return false;
-    }
+	    global.last_message = "Alchemy failed.";
+	    return false;
+	}
 
-    inventory_add_outputs(recipe.outputs);
-    global.last_message = "Alchemy succeeded.";
-    return true;
+	var recipe = global.recipes[recipe_index];
+	recipe.discovered = true;
+	global.recipes[recipe_index] = recipe;
+
+	inventory_add_outputs(recipe.outputs);
+	global.last_message = "Alchemy succeeded.";
+	return true;
+
 }
 
 function rewind_failure(_failure_index) {
@@ -116,4 +122,21 @@ function action_name(_action) {
     }
 
     return "Unknown";
+}
+
+function recharge_stone_with_heart() {
+    if (!inventory_has(Material.Heart, 1)) {
+        global.last_message = "You do not have a heart.";
+        return false;
+    }
+
+    if (global.stone_charge >= global.stone_max_charge) {
+        global.last_message = "Stone is already fully charged.";
+        return false;
+    }
+
+    inventory_remove(Material.Heart, 1);
+    global.stone_charge = min(global.stone_max_charge, global.stone_charge + 3);
+    global.last_message = "Stone recharged.";
+    return true;
 }

@@ -38,12 +38,30 @@ inventory_add(Material.Silver, 1);
 inventory_add(Material.Mercury, 1);
 inventory_add(Material.SoulTiny, 1);
 inventory_add(Material.Saltwater, 1);
+inventory_add(Material.FaerieJar, 1);
+inventory_add(Material.Fungi, 1);
 
 // activate tutorial quest
 array_push(global.active_quests, global.special_quests[0]);
-global.active_quests[0].accepted = true;
 
-for (var i = 0; i < array_length(global.active_quests[0].provided_materials); i++) {
-    var p = global.active_quests[0].provided_materials[i];
-    inventory_add(p.material, p.amount);
-}
+
+//hover description
+global.hovered_material = -1;
+global.hovered_recipe = -1;
+
+
+
+//npc
+global.npc_present = true;
+global.dialog_visible = true;
+global.npc_name = "Customer";
+global.npc_line = "Hello. I need a wine glass for tonight's festivities.";
+global.current_quest_index = 0;
+//global.quest_stage = "offer";
+global.npc_sprite = noone;
+
+//quests
+
+global.next_special_quest_index = 1;
+
+
