@@ -20,6 +20,12 @@ global.last_message = "Welcome.";
 
 global.inventory_scroll = 0;
 
+//fonts
+global.font_ui = fnt_ui;
+global.font_book = fnt_book;
+global.font_small = fnt_small;
+global.font_title = fnt_title;
+
 // test materials
 inventory_add(Material.Sand, 2);
 inventory_add(Material.Water, 2);

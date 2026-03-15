@@ -2,7 +2,7 @@
   "$GMProject":"v1",
   "%Name":"Philospher's Stone",
   "AudioGroups":[
-    {"$GMAudioGroup":"","%Name":"audiogroup_default","name":"audiogroup_default","resourceType":"GMAudioGroup","resourceVersion":"2.0","targets":-1,},
+    {"$GMAudioGroup":"v1","%Name":"audiogroup_default","exportDir":"","name":"audiogroup_default","resourceType":"GMAudioGroup","resourceVersion":"2.0","targets":-1,},
   ],
   "configs":{
     "children":[],
@@ -31,10 +31,14 @@
   "isEcma":false,
   "LibraryEmitters":[],
   "MetaData":{
-    "IDEVersion":"2024.13.1.193",
+    "IDEVersion":"2024.14.3.217",
   },
   "name":"Philospher's Stone",
   "resources":[
+    {"id":{"name":"fnt_book","path":"fonts/fnt_book/fnt_book.yy",},},
+    {"id":{"name":"fnt_small","path":"fonts/fnt_small/fnt_small.yy",},},
+    {"id":{"name":"fnt_title","path":"fonts/fnt_title/fnt_title.yy",},},
+    {"id":{"name":"fnt_ui","path":"fonts/fnt_ui/fnt_ui.yy",},},
     {"id":{"name":"oAlchemyTable","path":"objects/oAlchemyTable/oAlchemyTable.yy",},},
     {"id":{"name":"oGame","path":"objects/oGame/oGame.yy",},},
     {"id":{"name":"oInput","path":"objects/oInput/oInput.yy",},},
@@ -43,10 +47,12 @@
     {"id":{"name":"oUI","path":"objects/oUI/oUI.yy",},},
     {"id":{"name":"rm_game","path":"rooms/rm_game/rm_game.yy",},},
     {"id":{"name":"scr_alchemy","path":"scripts/scr_alchemy/scr_alchemy.yy",},},
+    {"id":{"name":"scr_book_pages","path":"scripts/scr_book_pages/scr_book_pages.yy",},},
     {"id":{"name":"scr_enums","path":"scripts/scr_enums/scr_enums.yy",},},
     {"id":{"name":"scr_init_game","path":"scripts/scr_init_game/scr_init_game.yy",},},
     {"id":{"name":"scr_inventory","path":"scripts/scr_inventory/scr_inventory.yy",},},
     {"id":{"name":"scr_quests","path":"scripts/scr_quests/scr_quests.yy",},},
+    {"id":{"name":"scr_ui_helpers","path":"scripts/scr_ui_helpers/scr_ui_helpers.yy",},},
     {"id":{"name":"bg_test","path":"sprites/bg_test/bg_test.yy",},},
     {"id":{"name":"sMaterials","path":"sprites/sMaterials/sMaterials.yy",},},
   ],
