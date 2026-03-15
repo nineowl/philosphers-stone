@@ -48,6 +48,7 @@ array_push(global.active_quests, global.special_quests[0]);
 //hover description
 global.hovered_material = -1;
 global.hovered_recipe = -1;
+global.hovered_failure = -1;
 
 
 

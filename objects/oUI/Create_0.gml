@@ -184,3 +184,52 @@ ui_quest_arrow_h = 12;
 //arrow sprite
 ui_arrow_sprite = sArrow;
 ui_arrow_scale = 1;
+
+
+//knife to kill faerie
+if (instance_exists(oKnifeMarker)) {
+    ui_knife_x = oKnifeMarker.x;
+    ui_knife_y = oKnifeMarker.y;
+} else {
+    ui_knife_x = 240;
+    ui_knife_y = 250;
+}
+
+ui_knife_w = 20;
+ui_knife_h = 20;
+
+// materials page sub-mode
+// 0 = Materials
+// 1 = Failures
+ui_materials_mode = 0;
+
+// sub-mode arrows on materials page
+ui_submode_arrow_left_x = ui_page_content_x + 74;
+ui_submode_arrow_left_y = ui_page_content_y - 14;
+
+ui_submode_arrow_right_x = ui_page_content_x + 98;
+ui_submode_arrow_right_y = ui_page_content_y - 14;
+
+ui_submode_arrow_w = 12;
+ui_submode_arrow_h = 12;
+
+// faerie kill confirm popup
+ui_faerie_confirm = false;
+ui_faerie_popup_active = false;
+ui_faerie_popup_frame = 0;
+ui_faerie_popup_speed = 0.09; // much slower than before
+
+ui_faerie_popup_x1 = 230;
+ui_faerie_popup_y1 = 110;
+ui_faerie_popup_x2 = 410;
+ui_faerie_popup_y2 = 200;
+
+ui_faerie_yes_x1 = 250;
+ui_faerie_yes_y1 = 170;
+ui_faerie_yes_x2 = 300;
+ui_faerie_yes_y2 = 192;
+
+ui_faerie_no_x1 = 330;
+ui_faerie_no_y1 = 170;
+ui_faerie_no_x2 = 380;
+ui_faerie_no_y2 = 192;

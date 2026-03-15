@@ -24,7 +24,16 @@ draw_text(12, 12, "Charge: " + string(global.stone_charge));
 // page title
 draw_set_font(global.font_book);
 draw_set_color(c_black);
-draw_text(ui_page_content_x, ui_page_content_y - 14, book_tab_name(book_tab));
+
+if (book_tab == 2) {
+    if (ui_materials_mode == 0) {
+        draw_text(ui_page_content_x, ui_page_content_y - 14, "Materials");
+    } else {
+        draw_text(ui_page_content_x, ui_page_content_y - 14, "Failures");
+    }
+} else {
+    draw_text(ui_page_content_x, ui_page_content_y - 14, book_tab_name(book_tab));
+}
 
 // page content
 switch (book_tab) {
@@ -65,15 +74,7 @@ switch (book_tab) {
             draw_text(ui_page_content_x, ui_page_content_y, "No active quests.");
         }
 
-        if (array_length(global.failure_items) > 0) {
-            draw_set_font(global.font_small);
-            draw_set_color(c_black);
-            draw_text(ui_page_content_x, ui_page_content_y + 150, "Failures:");
 
-            for (var f = 0; f < array_length(global.failure_items); f++) {
-                draw_text(ui_page_content_x, ui_page_content_y + 164 + f * 14, "Failure " + string(f));
-            }
-        }
     break;
 
     case 1:
@@ -128,24 +129,78 @@ switch (book_tab) {
         }
     break;
 
-    case 2:
-        draw_set_font(global.font_book);
-        draw_set_color(c_black);
+	case 2:
+	    draw_set_font(global.font_book);
+	    draw_set_color(c_black);
 
-        var visible_materials = inventory_get_visible_materials(ui_page_scroll, ui_page_rows_visible);
+	    // sub-mode arrows
+	    draw_sprite_ext(
+	        ui_arrow_sprite,
+	        0,
+	        ui_submode_arrow_left_x,
+	        ui_submode_arrow_left_y,
+	        ui_arrow_scale,
+	        ui_arrow_scale,
+	        0,
+	        c_white,
+	        1
+	    );
 
-        for (var j = 0; j < array_length(visible_materials); j++) {
-            var mat = visible_materials[j];
-            var row_y2 = ui_page_content_y + j * ui_page_list_row_h;
-            var mat_data = global.material_data[mat];
+	    draw_sprite_ext(
+	        ui_arrow_sprite,
+	        1,
+	        ui_submode_arrow_right_x,
+	        ui_submode_arrow_right_y,
+	        ui_arrow_scale,
+	        ui_arrow_scale,
+	        0,
+	        c_white,
+	        1
+	    );
 
-            if (!is_undefined(mat_data.spr)) {
-                draw_sprite_ext(mat_data.spr, mat_data.frame, ui_page_content_x + 8, row_y2 + 10, 0.5, 0.5, 0, c_white, 1);
-            }
+	    if (ui_materials_mode == 0) {
 
-            draw_text(ui_page_content_x + 22, row_y2 + 2, mat_data.name + " x" + string(global.inventory[mat]));
-        }
-    break;
+	        var visible_materials = inventory_get_visible_materials(ui_page_scroll, ui_page_rows_visible);
+
+	        for (var j = 0; j < array_length(visible_materials); j++) {
+	            var mat = visible_materials[j];
+	            var row_y2 = ui_page_content_y + j * ui_page_list_row_h;
+	            var mat_data = global.material_data[mat];
+
+	            if (!is_undefined(mat_data.spr)) {
+	                draw_sprite_ext(mat_data.spr, mat_data.frame, ui_page_content_x + 8, row_y2 + 10, 0.5, 0.5, 0, c_white, 1);
+	            }
+
+	            draw_text(ui_page_content_x + 22, row_y2 + 2, mat_data.name + " x" + string(global.inventory[mat]));
+	        }
+	    } else {
+
+	        if (array_length(global.failure_items) <= 0) {
+	            draw_set_font(global.font_small);
+	            draw_text(ui_page_content_x, ui_page_content_y + 10, "No failures.");
+	        } else {
+	            draw_set_font(global.font_small);
+
+	            for (var f = 0; f < array_length(global.failure_items); f++) {
+	                var fy = ui_page_content_y + f * 18;
+
+					if (global.selected_failure_index == f) {
+					    draw_rectangle(ui_page_content_x - 2, fy - 1, ui_page_content_x + 70, fy + 11, true);
+					    draw_set_color(c_white);
+					    draw_text(ui_page_content_x, fy, "Failure");
+					    draw_set_color(c_black);
+					} else {
+					    draw_text(ui_page_content_x, fy, "Failure");
+					}
+	            }
+
+	            if (global.selected_action == AlchemyAction.Rewind) {
+	                draw_text(ui_page_content_x, ui_page_content_y + 140, "Select one,");
+	                draw_text(ui_page_content_x, ui_page_content_y + 152, "then click circle.");
+	            }
+	        }
+	    }
+	break;
 }
 
 // selected materials in middle
@@ -251,6 +306,23 @@ if (global.hovered_material != -1) {
     draw_text_ext(ui_hover_desc_x, ui_hover_desc_y, hover_data.desc, 12, 160);
 }
 
+// hover text for failure contents
+if (global.hovered_failure != -1) {
+    var fail = global.failure_items[global.hovered_failure];
+    var fail_text = "Contains: ";
+
+    for (var i = 0; i < array_length(fail.materials); i++) {
+        fail_text += global.material_data[fail.materials[i]].name;
+        if (i < array_length(fail.materials) - 1) {
+            fail_text += ", ";
+        }
+    }
+
+    draw_set_font(global.font_small);
+    draw_set_color(c_black);
+    draw_text_ext(ui_hover_name_x, ui_hover_name_y, fail_text, 12, 160);
+}
+
 // npc interactions
 if (global.dialog_visible && array_length(global.active_quests) > 0) {
     var dq = global.active_quests[0];
@@ -291,8 +363,45 @@ if (global.dialog_visible && array_length(global.active_quests) > 0) {
     }
 }
 
+// faerie kill confirm popup
+if (ui_faerie_confirm) {
+    draw_set_color(make_color_rgb(205, 170, 125));
+    draw_rectangle(ui_faerie_popup_x1, ui_faerie_popup_y1, ui_faerie_popup_x2, ui_faerie_popup_y2, false);
+
+    draw_set_font(global.font_small);
+    draw_set_color(c_black);
+    draw_text(ui_faerie_popup_x1 + 16, ui_faerie_popup_y1 + 28, "Are you sure?");
+
+    draw_rectangle(ui_faerie_yes_x1, ui_faerie_yes_y1, ui_faerie_yes_x2, ui_faerie_yes_y2, true);
+    draw_rectangle(ui_faerie_no_x1, ui_faerie_no_y1, ui_faerie_no_x2, ui_faerie_no_y2, true);
+
+    draw_set_color(c_white);
+    draw_text(ui_faerie_yes_x1 + 12, ui_faerie_yes_y1 + 4, "YES");
+    draw_text(ui_faerie_no_x1 + 16, ui_faerie_no_y1 + 4, "NO");
+}
+
+// faerie kill animation popup
+if (ui_faerie_popup_active) {
+    draw_set_color(make_color_rgb(30, 20, 20));
+    draw_rectangle(ui_faerie_popup_x1, ui_faerie_popup_y1, ui_faerie_popup_x2, ui_faerie_popup_y2, false);
+
+    draw_sprite_ext(
+        sFaerieKill,
+        floor(ui_faerie_popup_frame),
+        (ui_faerie_popup_x1 + ui_faerie_popup_x2) * 0.5,
+        (ui_faerie_popup_y1 + ui_faerie_popup_y2) * 0.5,
+        1,
+        1,
+        0,
+        c_white,
+        1
+    );
+}
+
 // stone charging button
 draw_set_font(global.font_small);
 draw_set_color(c_white);
 draw_rectangle(ui_recharge_x1, ui_recharge_y1, ui_recharge_x2, ui_recharge_y2, true);
 draw_text(ui_recharge_x1 + 4, ui_recharge_y1 + 4, "RECHARGE");
+
+

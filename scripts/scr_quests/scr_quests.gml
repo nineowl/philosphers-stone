@@ -49,6 +49,26 @@ function init_special_quests() {
         stage: "offer",
         completed: false
     });
+	
+	array_push(quests, {
+        id: "soldiers_fortune",
+        title: "Soldier in need",
+        desc: "Hello, I need 2 swords forged as soon as possible. The train is leaving the station in 20 minutes and I need them. It's urgent! Here are the materials!",
+        request_material: Material.Sword,
+        request_amount: 2,
+        provided_materials: [
+            { material: Material.Iron, amount: 2, },
+            { material: Material.Carbon, amount: 2, }
+        ],
+        rewards: [
+            { type: "material", material: Material.Gold, amount: 1 }
+        ],
+        portrait_frame: 2,
+        stage: "offer",
+        completed: false
+    });
+	
+	
 
     return quests;
 }

@@ -28,6 +28,7 @@ if (global.dialog_visible && array_length(global.active_quests) > 0) {
 // reset hover every step
 global.hovered_material = -1;
 global.hovered_recipe = -1;
+global.hovered_failure = -1;
 
 // keep oBook synced to alchemy symbol frame
 if (instance_exists(oBook)) {
@@ -157,44 +158,58 @@ if (mouse_check_button_pressed(mb_right)) {
 }
 
 // -------------------------
-// HOVER + MATERIAL CLICKING
+// MATERIALS / FAILURES PAGE
 // -------------------------
 if (book_tab == 2) {
-    var visible_materials = inventory_get_visible_materials(ui_page_scroll, ui_page_rows_visible);
+    if (ui_materials_mode == 0) {
+        var visible_materials = inventory_get_visible_materials(ui_page_scroll, ui_page_rows_visible);
 
-    for (var i = 0; i < array_length(visible_materials); i++) {
-        var mat = visible_materials[i];
-        var row_y = ui_page_content_y + i * ui_page_list_row_h;
-        var row_x1 = ui_page_content_x;
-        var row_y1 = row_y;
-        var row_x2 = ui_page_content_x + ui_page_content_w;
-        var row_y2 = row_y + ui_page_list_row_h - 2;
+        for (var i = 0; i < array_length(visible_materials); i++) {
+            var mat = visible_materials[i];
+            var row_y = ui_page_content_y + i * ui_page_list_row_h;
+            var row_x1 = ui_page_content_x;
+            var row_y1 = row_y;
+            var row_x2 = ui_page_content_x + ui_page_content_w;
+            var row_y2 = row_y + ui_page_list_row_h - 2;
 
-        if (point_in_rectangle(mx, my, row_x1, row_y1, row_x2, row_y2)) {
-            global.hovered_material = mat;
+            if (point_in_rectangle(mx, my, row_x1, row_y1, row_x2, row_y2)) {
+                global.hovered_material = mat;
 
-            if (mouse_check_button_pressed(mb_left)) {
-                if (array_length(global.selected_materials) >= 4) {
-                    global.last_message = "All ingredient slots are full.";
+                if (mouse_check_button_pressed(mb_left)) {
+                    if (array_length(global.selected_materials) >= 4) {
+                        global.last_message = "All ingredient slots are full.";
+                        exit;
+                    }
+
+                    var already_selected = selected_count_of(mat);
+                    var owned_amount = global.inventory[mat];
+
+                    if (already_selected >= owned_amount) {
+                        global.last_message = "You do not own enough " + global.material_data[mat].name + ".";
+                        exit;
+                    }
+
+                    array_push(global.selected_materials, mat);
+                    global.last_message = "Added " + global.material_data[mat].name;
                     exit;
                 }
-
-                var already_selected = selected_count_of(mat);
-                var owned_amount = global.inventory[mat];
-
-                if (already_selected >= owned_amount) {
-                    global.last_message = "You do not own enough " + global.material_data[mat].name + ".";
-                    exit;
-                }
-
-                array_push(global.selected_materials, mat);
-                global.last_message = "Added " + global.material_data[mat].name;
-                exit;
             }
         }
+    } else {
+		for (var f = 0; f < array_length(global.failure_items); f++) {
+		    var fy = ui_page_content_y + f * 18;
+
+		    if (point_in_rectangle(mx, my, ui_page_content_x, fy, ui_page_content_x + 90, fy + 12)) {
+		        global.hovered_failure = f;
+
+		        if (mouse_check_button_pressed(mb_left)) {
+		            global.selected_failure_index = f;
+		            global.last_message = "Selected failure.";
+		        }
+		    }
+		}
     }
 }
-
 // -------------------------
 // HOVER RECIPE PAGE
 // -------------------------
@@ -230,6 +245,25 @@ if (book_tab == 1) {
 // LEFT CLICK HANDLING
 // -------------------------
 if (mouse_check_button_pressed(mb_left)) {
+	
+	// faerie confirm popup buttons
+	if (ui_faerie_confirm) {
+	    if (point_in_rectangle(mx, my, ui_faerie_yes_x1, ui_faerie_yes_y1, ui_faerie_yes_x2, ui_faerie_yes_y2)) {
+	        ui_faerie_confirm = false;
+
+	        if (!ui_faerie_popup_active && global.inventory[Material.FaerieJar] > 0) {
+	            inventory_remove(Material.FaerieJar, 1);
+	            ui_faerie_popup_active = true;
+	            ui_faerie_popup_frame = 0;
+	        }
+	        exit;
+	    }
+
+	    if (point_in_rectangle(mx, my, ui_faerie_no_x1, ui_faerie_no_y1, ui_faerie_no_x2, ui_faerie_no_y2)) {
+	        ui_faerie_confirm = false;
+	        exit;
+	    }
+	}
 
     // click dialogue box: reveal text or move to next quest
     if (global.dialog_visible && array_length(global.active_quests) > 0) {
@@ -252,7 +286,24 @@ if (mouse_check_button_pressed(mb_left)) {
             }
         }
     }
+	// materials/failures sub-mode toggle
+	if (book_tab == 2) {
+	    if (point_in_rectangle(mx, my,
+	        ui_submode_arrow_left_x, ui_submode_arrow_left_y,
+	        ui_submode_arrow_left_x + ui_submode_arrow_w, ui_submode_arrow_left_y + ui_submode_arrow_h)) {
 
+	        ui_materials_mode = max(0, ui_materials_mode - 1);
+	        exit;
+	    }
+
+	    if (point_in_rectangle(mx, my,
+	        ui_submode_arrow_right_x, ui_submode_arrow_right_y,
+	        ui_submode_arrow_right_x + ui_submode_arrow_w, ui_submode_arrow_right_y + ui_submode_arrow_h)) {
+
+	        ui_materials_mode = min(1, ui_materials_mode + 1);
+	        exit;
+	    }
+	}
     // action arrows
     if (point_in_rectangle(mx, my,
         ui_action_arrow_left_x, ui_action_arrow_left_y,
@@ -362,6 +413,14 @@ if (mouse_check_button_pressed(mb_left)) {
         }
     }
 
+	//knife kill faerie
+	if (instance_exists(oKnifeMarker) && global.inventory[Material.FaerieJar] > 0) {
+	    if (collision_point(mx, my, oKnifeMarker, false, true)) {
+	        ui_faerie_confirm = true;
+	        exit;
+	    }
+	}
+
     // recharge
     if (point_in_rectangle(mx, my, ui_recharge_x1, ui_recharge_y1, ui_recharge_x2, ui_recharge_y2)) {
         recharge_stone_with_heart();
@@ -375,15 +434,15 @@ if (ui_faerie_frame >= sprite_get_number(sFaerie)) {
     ui_faerie_frame = 0;
 }
 
-// failure selection
-if (book_tab == 0 && global.selected_action == AlchemyAction.Rewind) {
-    for (var f = 0; f < array_length(global.failure_items); f++) {
-        var fy = ui_page_content_y + 164 + f * 14;
 
-        if (point_in_rectangle(mx, my, ui_page_content_x, fy, ui_page_content_x + 90, fy + 12)) {
-            global.selected_failure_index = f;
-            global.last_message = "Selected failure " + string(f);
-            exit;
-        }
+
+if (ui_faerie_popup_active) {
+    ui_faerie_popup_frame += ui_faerie_popup_speed;
+
+    if (ui_faerie_popup_frame >= sprite_get_number(sFaerieKill)) {
+        ui_faerie_popup_active = false;
+        ui_faerie_popup_frame = 0;
+
+        inventory_add(Material.Heart, 1);
     }
 }
