@@ -18,6 +18,33 @@ if (keyboard_check_pressed(ord("M"))) {
 }
 
 
+// Action switching by keyboard
+if (keyboard_check_pressed(ord("1"))) {
+    global.selected_action = AlchemyAction.Separate;
+    global.last_message = "Selected action: " + action_name(global.selected_action);
+}
+
+if (keyboard_check_pressed(ord("2"))) {
+    global.selected_action = AlchemyAction.Combine;
+    global.last_message = "Selected action: " + action_name(global.selected_action);
+}
+
+if (keyboard_check_pressed(ord("3"))) {
+    global.selected_action = AlchemyAction.Heat;
+    global.last_message = "Selected action: " + action_name(global.selected_action);
+}
+
+if (keyboard_check_pressed(ord("4"))) {
+    global.selected_action = AlchemyAction.Cold;
+    global.last_message = "Selected action: " + action_name(global.selected_action);
+}
+
+if (keyboard_check_pressed(ord("5"))) {
+    global.selected_action = AlchemyAction.Rewind;
+    global.last_message = "Selected action: " + action_name(global.selected_action);
+}
+
+
 // Clamp page scroll depending on current tab
 var max_scroll = 0;
 
@@ -60,7 +87,45 @@ if (mouse_check_button_pressed(mb_left)) {
     var mx = mouse_x;
     var my = mouse_y;
 
+    // -------------------------
+    // Action arrows under right page
+    // -------------------------
+// Left arrow
+if (point_in_rectangle(
+    mx, my,
+    ui_action_arrow_left_x,
+    ui_action_arrow_left_y,
+    ui_action_arrow_left_x + ui_action_arrow_w,
+    ui_action_arrow_left_y + ui_action_arrow_h
+)) {
+    global.selected_action -= 1;
+    if (global.selected_action < 0) {
+        global.selected_action = AlchemyAction.Rewind;
+    }
+    global.last_message = "Selected action: " + action_name(global.selected_action);
+    exit;
+}
+
+// Right arrow
+if (point_in_rectangle(
+    mx, my,
+    ui_action_arrow_right_x,
+    ui_action_arrow_right_y,
+    ui_action_arrow_right_x + ui_action_arrow_w,
+    ui_action_arrow_right_y + ui_action_arrow_h
+)) {
+    global.selected_action += 1;
+    if (global.selected_action > AlchemyAction.Rewind) {
+        global.selected_action = 0;
+    }
+    global.last_message = "Selected action: " + action_name(global.selected_action);
+    exit;
+}
+
+
+    // -------------------------
     // Materials page clicks
+    // -------------------------
     if (book_tab == 2) {
         var visible_materials = inventory_get_visible_materials(ui_page_scroll, ui_page_rows_visible);
 
@@ -93,13 +158,9 @@ if (mouse_check_button_pressed(mb_left)) {
         }
     }
 
-    // Turn in quest
-    if (point_in_rectangle(mx, my, ui_turnin_x1, ui_turnin_y1, ui_turnin_x2, ui_turnin_y2)) {
-        try_complete_active_quest(0);
-        exit;
-    }
-
+    // -------------------------
     // Perform alchemy by clicking anywhere on right page
+    // -------------------------
     if (point_in_rectangle(mx, my, ui_page_right_x1, ui_page_right_y1, ui_page_right_x2, ui_page_right_y2)) {
         if (global.selected_action == AlchemyAction.Rewind) {
             if (global.selected_failure_index >= 0) {
@@ -115,7 +176,9 @@ if (mouse_check_button_pressed(mb_left)) {
         exit;
     }
 
+    // -------------------------
     // Failure selection (temporary)
+    // -------------------------
     if (global.selected_action == AlchemyAction.Rewind) {
         for (var f = 0; f < array_length(global.failure_items); f++) {
             var failure_y = ui_customer_text_y + 80 + f * 18;

@@ -17,8 +17,8 @@ ui_customer_y1 = 30;
 ui_customer_x2 = 259;
 ui_customer_y2 = 317;
 
-ui_customer_text_x = 40;
-ui_customer_text_y = 282;
+ui_customer_text_x = oQuestTextMarker.x;
+ui_customer_text_y = oQuestTextMarker.y;
 
 // turn-in button on lower-left desk area
 ui_turnin_x1 = 40;
@@ -44,8 +44,8 @@ ui_page_right_y2 = 278;
 // -------------------------
 // LEFT PAGE CONTENT AREA
 // -------------------------
-ui_page_content_x = 327;
-ui_page_content_y = 95;
+ui_page_content_x = oQuestTextMarker.x;
+ui_page_content_y = oQuestTextMarker.y;
 ui_page_content_w = 112;
 ui_page_content_h = 160;
 
@@ -57,8 +57,11 @@ ui_page_list_icon_size = 16;
 // ALCHEMY CENTER
 // materials go in the middle
 // -------------------------
-ui_alchemy_center_x = 530;
-ui_alchemy_center_y = 160;
+ui_alchemy_center_x = oAlchemyCenterMarker.x;
+
+
+ui_alchemy_center_y = oAlchemyCenterMarker.y;
+
 
 // selected materials fan slightly around center
 ui_alchemy_slot_gap = 18;
@@ -84,3 +87,29 @@ ui_knife_x1 = 166;
 ui_knife_y1 = 280;
 ui_knife_x2 = 215;
 ui_knife_y2 = 305;
+
+
+// Philospher's Stone
+
+
+ui_stone_x = oStoneMarker.x;
+ui_stone_y = oStoneMarker.y;
+
+// Page/action arrows under right page
+ui_action_arrow_left_x = 495;
+ui_action_arrow_left_y = 300;
+
+ui_action_arrow_right_x = 580;
+ui_action_arrow_right_y = 300;
+
+// clickable box size for arrows
+ui_action_arrow_w = 16;
+ui_action_arrow_h = 16;
+
+// action label position
+ui_action_label_x = 515;
+ui_action_label_y = 300;
+
+
+// Philosopher stone draw
+ui_stone_scale = 2;

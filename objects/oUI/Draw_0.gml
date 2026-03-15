@@ -1,3 +1,20 @@
+//draw bg
+draw_sprite(bg_main, global.selected_action, 0, 0);
+//draw stone
+draw_sprite_ext(
+    sMaterials,
+    57,
+    ui_stone_x,
+    ui_stone_y,
+    ui_stone_scale,
+    ui_stone_scale,
+    0,
+    c_white,
+    1
+);
+
+
+
 if (!variable_global_exists("stone_charge")) exit;
 
 draw_set_halign(fa_left);
@@ -6,12 +23,9 @@ draw_set_valign(fa_top);
 // ---------------------------------
 // Debug / HUD header
 // ---------------------------------
-draw_set_font(global.font_ui);
+draw_set_font(global.font_small);
 draw_set_color(c_white);
-draw_text(10, 18, "Stone Charge: " + string(global.stone_charge) + "/" + string(global.stone_max_charge));
-draw_text(10, 36, "Selected Action: " + action_name(global.selected_action));
-draw_text(10, 54, "Message: " + global.last_message);
-draw_text(10, 72, "Page: " + book_tab_name(book_tab) + "   (Q/R/M)");
+draw_text(12, 12, "Charge: " + string(global.stone_charge));
 
 
 // ---------------------------------
@@ -84,23 +98,13 @@ for (var s = 0; s < array_length(global.selected_materials); s++) {
 }
 
 
-// ---------------------------------
-// Customer / quest summary
-// ---------------------------------
-// Customer / quest summary
-draw_set_font(global.font_book);
-draw_set_color(c_black);
-draw_text(ui_customer_text_x, ui_customer_text_y, "Customer Area");
-
-
-// ---------------------------------
-// Turn-in button
-// ---------------------------------
-// Turn-in button
+//book arrows
 draw_set_font(global.font_small);
 draw_set_color(c_black);
-draw_rectangle(ui_turnin_x1, ui_turnin_y1, ui_turnin_x2, ui_turnin_y2, true);
-draw_text(ui_turnin_x1 + 10, ui_turnin_y1 + 8, "TURN IN");
+
+draw_text(ui_action_arrow_left_x, ui_action_arrow_left_y, "<");
+draw_text(ui_action_arrow_right_x, ui_action_arrow_right_y, ">");
+draw_text(ui_action_label_x, ui_action_label_y, action_name(global.selected_action));
 
 
 // ---------------------------------
