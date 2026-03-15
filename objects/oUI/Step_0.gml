@@ -10,9 +10,9 @@ if (global.npc_line != ui_last_dialog_line) {
 
 // typewriter progress
 if (global.dialog_visible && array_length(global.active_quests) > 0) {
-    var dq = global.active_quests[global.current_quest_index];
+    var dq = global.active_quests[0];
 
-    if (dq.stage == "offer") {
+    if (dq.stage == "offer" || dq.stage == "completed") {
         ui_dialog_char_timer += ui_dialog_char_speed;
 
         if (ui_dialog_char_timer >= 1) {
@@ -29,14 +29,12 @@ if (global.dialog_visible && array_length(global.active_quests) > 0) {
 global.hovered_material = -1;
 global.hovered_recipe = -1;
 
-// sync book frame to current alchemy action
+// keep oBook synced to alchemy symbol frame
 if (instance_exists(oBook)) {
     with (oBook) {
         image_index = global.selected_action;
     }
 }
-
-
 
 // -------------------------
 // KEYBOARD PAGE SWITCHING
@@ -45,18 +43,30 @@ if (keyboard_check_pressed(ord("Q"))) {
     book_tab = 0;
     ui_page_scroll = 0;
     global.last_message = "Opened Quests page.";
+
+    if (!instance_exists(oPageTurn) && instance_exists(oBook)) {
+        instance_create_depth(oBook.x, oBook.y, -10, oPageTurn);
+    }
 }
 
 if (keyboard_check_pressed(ord("R"))) {
     book_tab = 1;
     ui_page_scroll = 0;
     global.last_message = "Opened Recipes page.";
+
+    if (!instance_exists(oPageTurn) && instance_exists(oBook)) {
+        instance_create_depth(oBook.x, oBook.y, -10, oPageTurn);
+    }
 }
 
 if (keyboard_check_pressed(ord("M"))) {
     book_tab = 2;
     ui_page_scroll = 0;
     global.last_message = "Opened Materials page.";
+
+    if (!instance_exists(oPageTurn) && instance_exists(oBook)) {
+        instance_create_depth(oBook.x, oBook.y, -10, oPageTurn);
+    }
 }
 
 // -------------------------
@@ -65,26 +75,46 @@ if (keyboard_check_pressed(ord("M"))) {
 if (keyboard_check_pressed(ord("1"))) {
     global.selected_action = AlchemyAction.Separate;
     global.last_message = "Selected action: " + action_name(global.selected_action);
+
+    if (!instance_exists(oPageTurn) && instance_exists(oBook)) {
+        instance_create_depth(oBook.x, oBook.y, -10, oPageTurn);
+    }
 }
 
 if (keyboard_check_pressed(ord("2"))) {
     global.selected_action = AlchemyAction.Combine;
     global.last_message = "Selected action: " + action_name(global.selected_action);
+
+    if (!instance_exists(oPageTurn) && instance_exists(oBook)) {
+        instance_create_depth(oBook.x, oBook.y, -10, oPageTurn);
+    }
 }
 
 if (keyboard_check_pressed(ord("3"))) {
     global.selected_action = AlchemyAction.Heat;
     global.last_message = "Selected action: " + action_name(global.selected_action);
+
+    if (!instance_exists(oPageTurn) && instance_exists(oBook)) {
+        instance_create_depth(oBook.x, oBook.y, -10, oPageTurn);
+    }
 }
 
 if (keyboard_check_pressed(ord("4"))) {
     global.selected_action = AlchemyAction.Cold;
     global.last_message = "Selected action: " + action_name(global.selected_action);
+
+    if (!instance_exists(oPageTurn) && instance_exists(oBook)) {
+        instance_create_depth(oBook.x, oBook.y, -10, oPageTurn);
+    }
 }
 
 if (keyboard_check_pressed(ord("5"))) {
     global.selected_action = AlchemyAction.Rewind;
     global.last_message = "Selected action: " + action_name(global.selected_action);
+
+    if (!instance_exists(oPageTurn) && instance_exists(oBook)) {
+        instance_create_depth(oBook.x, oBook.y, -10, oPageTurn);
+    }
 }
 
 // -------------------------
@@ -94,7 +124,7 @@ var max_scroll = 0;
 
 switch (book_tab) {
     case 0:
-        max_scroll = max(0, array_length(global.active_quests) - ui_page_rows_visible);
+        max_scroll = 0;
     break;
 
     case 1:
@@ -164,6 +194,7 @@ if (book_tab == 2) {
         }
     }
 }
+
 // -------------------------
 // HOVER RECIPE PAGE
 // -------------------------
@@ -195,23 +226,32 @@ if (book_tab == 1) {
     }
 }
 
-
 // -------------------------
 // LEFT CLICK HANDLING
 // -------------------------
 if (mouse_check_button_pressed(mb_left)) {
 
-	// click dialogue box to instantly reveal full line
-	if (global.dialog_visible && array_length(global.active_quests) > 0) {
-	    var dq = global.active_quests[global.current_quest_index];
+    // click dialogue box: reveal text or move to next quest
+    if (global.dialog_visible && array_length(global.active_quests) > 0) {
+        var dq = global.active_quests[0];
 
-	    if (dq.stage == "offer") {
-	        if (point_in_rectangle(mx, my, ui_dialog_x1, ui_dialog_y1, ui_dialog_x2, ui_dialog_y2)) {
-	            ui_dialog_char_index = string_length(global.npc_line);
-	            exit;
-	        }
-	    }
-	}
+        if (dq.stage == "offer" || dq.stage == "completed") {
+            if (point_in_rectangle(mx, my, ui_dialog_x1, ui_dialog_y1, ui_dialog_x2, ui_dialog_y2)) {
+                if (ui_dialog_char_index < string_length(global.npc_line)) {
+                    ui_dialog_char_index = string_length(global.npc_line);
+                    exit;
+                }
+
+                if (dq.stage == "completed" && global.pending_next_quest) {
+                    advance_to_next_quest();
+                    ui_dialog_char_index = 0;
+                    ui_dialog_char_timer = 0;
+                    ui_last_dialog_line = "";
+                    exit;
+                }
+            }
+        }
+    }
 
     // action arrows
     if (point_in_rectangle(mx, my,
@@ -221,6 +261,10 @@ if (mouse_check_button_pressed(mb_left)) {
         global.selected_action -= 1;
         if (global.selected_action < 0) global.selected_action = AlchemyAction.Rewind;
         global.last_message = "Selected action: " + action_name(global.selected_action);
+
+        if (!instance_exists(oPageTurn) && instance_exists(oBook)) {
+            instance_create_depth(oBook.x, oBook.y, -10, oPageTurn);
+        }
         exit;
     }
 
@@ -231,14 +275,22 @@ if (mouse_check_button_pressed(mb_left)) {
         global.selected_action += 1;
         if (global.selected_action > AlchemyAction.Rewind) global.selected_action = 0;
         global.last_message = "Selected action: " + action_name(global.selected_action);
+
+        if (!instance_exists(oPageTurn) && instance_exists(oBook)) {
+            instance_create_depth(oBook.x, oBook.y, -10, oPageTurn);
+        }
         exit;
     }
 
-    // Q/R/M clicks
+    // Q / R / M clicks
     if (point_in_rectangle(mx, my, ui_tab_q_x, ui_tab_q_y, ui_tab_q_x + ui_tab_w, ui_tab_q_y + ui_tab_h)) {
         book_tab = 0;
         ui_page_scroll = 0;
         global.last_message = "Opened Quests page.";
+
+        if (!instance_exists(oPageTurn) && instance_exists(oBook)) {
+            instance_create_depth(oBook.x, oBook.y, -10, oPageTurn);
+        }
         exit;
     }
 
@@ -246,6 +298,10 @@ if (mouse_check_button_pressed(mb_left)) {
         book_tab = 1;
         ui_page_scroll = 0;
         global.last_message = "Opened Recipes page.";
+
+        if (!instance_exists(oPageTurn) && instance_exists(oBook)) {
+            instance_create_depth(oBook.x, oBook.y, -10, oPageTurn);
+        }
         exit;
     }
 
@@ -253,10 +309,12 @@ if (mouse_check_button_pressed(mb_left)) {
         book_tab = 2;
         ui_page_scroll = 0;
         global.last_message = "Opened Materials page.";
+
+        if (!instance_exists(oPageTurn) && instance_exists(oBook)) {
+            instance_create_depth(oBook.x, oBook.y, -10, oPageTurn);
+        }
         exit;
     }
-
-
 
     // perform alchemy by clicking right page
     if (point_in_rectangle(mx, my, ui_page_right_x1, ui_page_right_y1, ui_page_right_x2, ui_page_right_y2)) {
@@ -273,84 +331,51 @@ if (mouse_check_button_pressed(mb_left)) {
         }
         exit;
     }
-	
-	// quest cycling arrows
-	if (book_tab == 0 && array_length(global.active_quests) > 1) {
-	    if (point_in_rectangle(mx, my,
-	        ui_quest_arrow_left_x, ui_quest_arrow_left_y,
-	        ui_quest_arrow_left_x + ui_quest_arrow_w, ui_quest_arrow_left_y + ui_quest_arrow_h)) {
 
-	        global.current_quest_index -= 1;
-	        if (global.current_quest_index < 0) {
-	            global.current_quest_index = array_length(global.active_quests) - 1;
-	        }
-	        exit;
-	    }
+    // accepting and ending quests
+    if (book_tab == 0 && array_length(global.active_quests) > 0) {
+        var q = global.active_quests[0];
 
-	    if (point_in_rectangle(mx, my,
-	        ui_quest_arrow_right_x, ui_quest_arrow_right_y,
-	        ui_quest_arrow_right_x + ui_quest_arrow_w, ui_quest_arrow_right_y + ui_quest_arrow_h)) {
+        if (q.stage == "offer") {
+            if (point_in_rectangle(mx, my, ui_accept_x1, ui_accept_y1, ui_accept_x2, ui_accept_y2)) {
+                q.stage = "accepted";
+                global.active_quests[0] = q;
 
-	        global.current_quest_index += 1;
-	        if (global.current_quest_index >= array_length(global.active_quests)) {
-	            global.current_quest_index = 0;
-	        }
-	        exit;
-	    }
-	}
+                global.npc_line = "Please bring me the item when it is ready.";
+                global.dialog_visible = false;
 
-	
-	// accepting and ending quests
-	if (book_tab == 0 && array_length(global.active_quests) > 0) {
-	    var q = global.active_quests[global.current_quest_index];
+                for (var i = 0; i < array_length(q.provided_materials); i++) {
+                    var p = q.provided_materials[i];
+                    inventory_add(p.material, p.amount);
+                }
 
-	    if (q.stage == "offer") {
-	        if (point_in_rectangle(mx, my, ui_accept_x1, ui_accept_y1, ui_accept_x2, ui_accept_y2)) {
-	            q.stage = "accepted";
-	            global.active_quests[global.current_quest_index] = q;
+                global.last_message = "Quest accepted.";
+                exit;
+            }
+        }
 
-	            global.npc_line = "Please bring me the item when it is ready.";
-	            global.dialog_visible = false;
+        if (q.stage == "accepted") {
+            if (point_in_rectangle(mx, my, ui_turnin_x1, ui_turnin_y1, ui_turnin_x2, ui_turnin_y2)) {
+                try_complete_active_quest(0);
+                exit;
+            }
+        }
+    }
 
-	            for (var i = 0; i < array_length(q.provided_materials); i++) {
-	                var p = q.provided_materials[i];
-	                inventory_add(p.material, p.amount);
-	            }
-
-	            global.last_message = "Quest accepted.";
-	            exit;
-	        }
-	    }
-
-	    if (q.stage == "accepted") {
-	        if (point_in_rectangle(mx, my, ui_turnin_x1, ui_turnin_y1, ui_turnin_x2, ui_turnin_y2)) {
-	            if (try_complete_active_quest(global.current_quest_index)) {
-	                global.npc_line = "Wonderful. Thank you.";
-	                global.dialog_visible = true;
-	            }
-	            exit;
-	        }
-	    }
-	}
-
-	
-	if (point_in_rectangle(mx, my, ui_recharge_x1, ui_recharge_y1, ui_recharge_x2, ui_recharge_y2)) {
+    // recharge
+    if (point_in_rectangle(mx, my, ui_recharge_x1, ui_recharge_y1, ui_recharge_x2, ui_recharge_y2)) {
         recharge_stone_with_heart();
         exit;
     }
-
 }
 
-
-//faerie
+// faerie animation
 ui_faerie_frame += ui_faerie_speed;
-
 if (ui_faerie_frame >= sprite_get_number(sFaerie)) {
     ui_faerie_frame = 0;
 }
 
-
-//failure handling
+// failure selection
 if (book_tab == 0 && global.selected_action == AlchemyAction.Rewind) {
     for (var f = 0; f < array_length(global.failure_items); f++) {
         var fy = ui_page_content_y + 164 + f * 14;

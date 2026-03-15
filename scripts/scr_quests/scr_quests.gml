@@ -85,18 +85,15 @@ function try_complete_active_quest(_index) {
         }
     }
 
+    q.completed = true;
+    q.stage = "completed";
+    global.active_quests[_index] = q;
+
     global.last_message = "Quest completed: " + q.title;
-
-    // remove completed quest from active list
-    array_delete(global.active_quests, _index, 1);
-
-    // clamp current selected quest index
-    if (global.current_quest_index >= array_length(global.active_quests)) {
-        global.current_quest_index = max(0, array_length(global.active_quests) - 1);
-    }
-
-    // add next quest
-    advance_to_next_quest();
+    global.npc_name = "Customer";
+    global.npc_line = "Wonderful. Thank you.";
+    global.dialog_visible = true;
+    global.pending_next_quest = true;
 
     return true;
 }
@@ -105,17 +102,17 @@ function try_complete_active_quest(_index) {
 
 function advance_to_next_quest() {
     if (global.next_special_quest_index < array_length(global.special_quests)) {
-        array_push(global.active_quests, global.special_quests[global.next_special_quest_index]);
+        global.active_quests[0] = global.special_quests[global.next_special_quest_index];
         global.next_special_quest_index += 1;
 
         global.npc_name = "Customer";
-        global.npc_line = "I have another request for you.";
+        global.npc_line = global.active_quests[0].desc;
         global.dialog_visible = true;
-
-        with (oUI) {
-            ui_dialog_char_index = 0;
-            ui_dialog_char_timer = 0;
-            ui_last_dialog_line = "";
-        }
+        global.pending_next_quest = false;
+    } else {
+        // no more quests
+        array_resize(global.active_quests, 0);
+        global.dialog_visible = false;
+        global.pending_next_quest = false;
     }
 }

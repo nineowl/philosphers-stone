@@ -1,8 +1,5 @@
 if (!variable_global_exists("stone_charge")) exit;
 
-// background first
-//draw_sprite(bg_main, global.selected_action, 0, 0);//no longer used
-
 // philosopher stone
 draw_sprite_ext(
     sMaterials,
@@ -16,10 +13,6 @@ draw_sprite_ext(
     1
 );
 
-
-//alchemy page handling:
-
-
 draw_set_halign(fa_left);
 draw_set_valign(fa_top);
 
@@ -32,22 +25,15 @@ draw_text(12, 12, "Charge: " + string(global.stone_charge));
 draw_set_font(global.font_book);
 draw_set_color(c_black);
 draw_text(ui_page_content_x, ui_page_content_y - 14, book_tab_name(book_tab));
-if (array_length(global.active_quests) > 1) {
-    draw_set_font(global.font_small);
-    draw_set_color(c_black);
-    draw_text(ui_quest_arrow_left_x, ui_quest_arrow_left_y, "<");
-    draw_text(ui_quest_arrow_right_x, ui_quest_arrow_right_y, ">");
-}
 
-
-// page content inline, no external script dependency
+// page content
 switch (book_tab) {
     case 0:
         draw_set_font(global.font_book);
         draw_set_color(c_black);
 
         if (array_length(global.active_quests) > 0) {
-            var quest = global.active_quests[global.current_quest_index];
+            var quest = global.active_quests[0];
             var can_turn_in = inventory_has(quest.request_material, quest.request_amount);
 
             draw_text(ui_page_content_x, ui_page_content_y, quest.title);
@@ -63,94 +49,84 @@ switch (book_tab) {
                 ui_page_content_w
             );
 
+            draw_set_font(global.font_small);
+            draw_set_color(c_black);
+
+            if (quest.stage == "offer") {
+                draw_rectangle(ui_accept_x1, ui_accept_y1, ui_accept_x2, ui_accept_y2, true);
+                draw_text(ui_accept_x1 + 8, ui_accept_y1 + 6, "ACCEPT");
+            }
+
+            if (quest.stage == "accepted") {
+                draw_rectangle(ui_turnin_x1, ui_turnin_y1, ui_turnin_x2, ui_turnin_y2, true);
+                draw_text(ui_turnin_x1 + 2, ui_turnin_y1 + 2, "TURN IN");
+            }
         } else {
             draw_text(ui_page_content_x, ui_page_content_y, "No active quests.");
         }
-		if (array_length(global.active_quests) > 0) {
-		    var quest = global.active_quests[global.current_quest_index];
 
-		    draw_set_font(global.font_small);
-		    draw_set_color(c_black);
+        if (array_length(global.failure_items) > 0) {
+            draw_set_font(global.font_small);
+            draw_set_color(c_black);
+            draw_text(ui_page_content_x, ui_page_content_y + 150, "Failures:");
 
-		    if (quest.stage == "offer") {
-		        draw_rectangle(ui_accept_x1, ui_accept_y1, ui_accept_x2, ui_accept_y2, true);
-		        draw_text(ui_accept_x1 + 8, ui_accept_y1 + 6, "ACCEPT");
-		    }
-
-		    if (quest.stage == "accepted") {
-		        draw_rectangle(ui_turnin_x1, ui_turnin_y1, ui_turnin_x2, ui_turnin_y2, true);
-		        draw_text(ui_turnin_x1 + 2, ui_turnin_y1 + 2, "TURN IN");
-		    }
-		}
-
-
-		if (array_length(global.failure_items) > 0) {
-		    draw_set_font(global.font_small);
-		    draw_set_color(c_black);
-		    draw_text(ui_page_content_x, ui_page_content_y + 150, "Failures:");
-
-		    for (var f = 0; f < array_length(global.failure_items); f++) {
-		        draw_text(ui_page_content_x, ui_page_content_y + 164 + f * 14, "Failure " + string(f));
-		    }
-		}
-
-
+            for (var f = 0; f < array_length(global.failure_items); f++) {
+                draw_text(ui_page_content_x, ui_page_content_y + 164 + f * 14, "Failure " + string(f));
+            }
+        }
     break;
 
-	case 1:
-	    draw_set_font(global.font_book);
-	    draw_set_color(c_black);
+    case 1:
+        draw_set_font(global.font_book);
+        draw_set_color(c_black);
 
-	    var recipe_draw_index = 0;
+        var recipe_draw_index = 0;
 
-	    for (var i = 0; i < array_length(global.recipes); i++) {
-	        var recipe = global.recipes[i];
-	        if (!recipe.discovered) continue;
+        for (var i = 0; i < array_length(global.recipes); i++) {
+            var recipe = global.recipes[i];
+            if (!recipe.discovered) continue;
 
-	        if (recipe_draw_index < ui_page_scroll) {
-	            recipe_draw_index++;
-	            continue;
-	        }
+            if (recipe_draw_index < ui_page_scroll) {
+                recipe_draw_index++;
+                continue;
+            }
 
-	        var row_y = ui_page_content_y + (recipe_draw_index - ui_page_scroll) * ui_page_list_row_h;
-	        if (row_y > ui_page_content_y + ui_page_content_h) break;
+            var row_y = ui_page_content_y + (recipe_draw_index - ui_page_scroll) * ui_page_list_row_h;
+            if (row_y > ui_page_content_y + ui_page_content_h) break;
 
-	        var out_mat = recipe.outputs[0].material;
+            var out_mat = recipe.outputs[0].material;
 
-	        // highlight hovered recipe
-	        if (global.hovered_recipe == i) {
-	            draw_rectangle(ui_page_content_x, row_y, ui_page_content_x + ui_page_content_w, row_y + ui_page_list_row_h - 2, true);
-	            draw_set_color(c_white);
-	            draw_text(ui_page_content_x + 2, row_y + 2, global.material_data[out_mat].name);
-	            draw_set_color(c_black);
-	        } else {
-	            draw_text(ui_page_content_x, row_y, global.material_data[out_mat].name);
-	        }
+            if (global.hovered_recipe == i) {
+                draw_rectangle(ui_page_content_x, row_y, ui_page_content_x + ui_page_content_w, row_y + ui_page_list_row_h - 2, true);
+                draw_set_color(c_white);
+                draw_text(ui_page_content_x + 2, row_y + 2, global.material_data[out_mat].name);
+                draw_set_color(c_black);
+            } else {
+                draw_text(ui_page_content_x, row_y, global.material_data[out_mat].name);
+            }
 
-	        recipe_draw_index++;
-	    }
+            recipe_draw_index++;
+        }
 
-	    // detailed recipe info
-	    if (global.hovered_recipe != -1) {
-	        var r = global.recipes[global.hovered_recipe];
-	        var detail_y = ui_page_content_y + 100;
+        if (global.hovered_recipe != -1) {
+            var r = global.recipes[global.hovered_recipe];
+            var detail_y = ui_page_content_y + 100;
 
-	        draw_set_font(global.font_small);
-	        draw_set_color(c_black);
+            draw_set_font(global.font_small);
+            draw_set_color(c_black);
 
-	        draw_text(ui_page_content_x, detail_y, "Action: " + action_name(r.action));
-	        draw_text(ui_page_content_x, detail_y + 14, "Ingredients:");
+            draw_text(ui_page_content_x, detail_y, "Action: " + action_name(r.action));
+            draw_text(ui_page_content_x, detail_y + 14, "Ingredients:");
 
-	        for (var k = 0; k < array_length(r.inputs); k++) {
-	            draw_text(
-	                ui_page_content_x + 8,
-	                detail_y + 28 + k * 12,
-	                "- " + global.material_data[r.inputs[k]].name
-	            );
-	        }
-	    }
-	break;
-
+            for (var k = 0; k < array_length(r.inputs); k++) {
+                draw_text(
+                    ui_page_content_x + 8,
+                    detail_y + 28 + k * 12,
+                    "- " + global.material_data[r.inputs[k]].name
+                );
+            }
+        }
+    break;
 
     case 2:
         draw_set_font(global.font_book);
@@ -238,7 +214,7 @@ draw_set_font(global.font_small);
 draw_set_color(c_black);
 draw_text(ui_action_label_x, ui_action_label_y, action_name(global.selected_action));
 
-// Q/R/M
+// Q / R / M
 draw_set_font(global.font_book);
 
 if (book_tab == 0) draw_set_color(c_yellow); else draw_set_color(c_black);
@@ -265,8 +241,7 @@ if (global.inventory[Material.FaerieJar] > 0) {
     );
 }
 
-
-// hover text
+// hover text for materials
 if (global.hovered_material != -1) {
     var hover_data = global.material_data[global.hovered_material];
 
@@ -278,12 +253,11 @@ if (global.hovered_material != -1) {
 
 // npc interactions
 if (global.dialog_visible && array_length(global.active_quests) > 0) {
-    var dq = global.active_quests[global.current_quest_index];
+    var dq = global.active_quests[0];
 
-    if (dq.stage == "offer") {
+    if (dq.stage == "offer" || dq.stage == "completed") {
         draw_set_alpha(1);
 
-        // portrait
         if (global.npc_portrait_sprite != noone) {
             draw_sprite_ext(
                 global.npc_portrait_sprite,
@@ -298,11 +272,9 @@ if (global.dialog_visible && array_length(global.active_quests) > 0) {
             );
         }
 
-        // solid dialogue box
         draw_set_color(make_color_rgb(205, 170, 125));
         draw_rectangle(ui_dialog_x1, ui_dialog_y1, ui_dialog_x2, ui_dialog_y2, false);
 
-        // typed text
         draw_set_font(global.font_small);
         draw_set_color(c_black);
 
@@ -319,10 +291,8 @@ if (global.dialog_visible && array_length(global.active_quests) > 0) {
     }
 }
 
-
-//stone charging button
+// stone charging button
 draw_set_font(global.font_small);
 draw_set_color(c_white);
 draw_rectangle(ui_recharge_x1, ui_recharge_y1, ui_recharge_x2, ui_recharge_y2, true);
 draw_text(ui_recharge_x1 + 4, ui_recharge_y1 + 4, "RECHARGE");
-

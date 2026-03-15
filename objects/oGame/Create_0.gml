@@ -64,3 +64,5 @@ global.npc_portrait_sprite = sNPC;
 global.next_special_quest_index = 1;
 
 
+//cuttign multiquest
+global.pending_next_quest = false;
