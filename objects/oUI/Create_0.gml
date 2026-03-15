@@ -73,13 +73,13 @@ ui_action_label_y = 280;
 // -------------------------
 // Q / R / M LETTERS
 // -------------------------
-ui_tab_q_x = 332;
+ui_tab_q_x = 342;
 ui_tab_q_y = 64;
 
-ui_tab_r_x = 366;
+ui_tab_r_x = 381;
 ui_tab_r_y = 64;
 
-ui_tab_m_x = 402;
+ui_tab_m_x = 417;
 ui_tab_m_y = 64;
 
 ui_tab_w = 16;
@@ -166,9 +166,9 @@ ui_accept_y2 = ui_page_content_y + 118;
 
 //stone charging button
 ui_recharge_x1 = ui_stone_x;
-ui_recharge_y1 = ui_stone_y + 34;
+ui_recharge_y1 = ui_stone_y + 54;
 ui_recharge_x2 = ui_stone_x + 60;
-ui_recharge_y2 = ui_stone_y + 50;
+ui_recharge_y2 = ui_stone_y + 70;
 
 
 // quest cycle arrows

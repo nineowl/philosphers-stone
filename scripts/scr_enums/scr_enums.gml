@@ -1,4 +1,5 @@
 enum Material {
+	PhilosopherStone,
     Water,
     Sand,
     Clay,

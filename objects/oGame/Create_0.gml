@@ -67,3 +67,14 @@ global.next_special_quest_index = 1;
 
 //cuttign multiquest
 global.pending_next_quest = false;
+
+//Title
+global.game_state = "title";
+global.title_text = "PHILOSOPHER'S STONE";
+global.title_subtext = "Equivalent Exchange";
+global.title_prompt = "Press SPACE to begin";
+
+global.gameover_title = "The Philosopher's Stone Crumbled";
+global.gameover_prompt = "Press R to restart";
+
+global.title_help = "Q/R/M = Pages   1-5 = Alchemy   Right click = Remove ingredient";

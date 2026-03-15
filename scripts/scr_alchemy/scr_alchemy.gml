@@ -8,7 +8,7 @@ function stone_spend_charge(_amount) {
 
         if (global.stone_charge <= 0) {
             global.stone_charge = 0;
-            global.game_lost = true;
+            global.game_state = "gameover";
         }
 
         return true;
@@ -80,6 +80,7 @@ function try_alchemy(_action, _inputs) {
 	    });
 
 	    global.last_message = "Alchemy failed.";
+		audio_play_sound(snd_alchemy_fail, 1, false);
 	    return false;
 	}
 
@@ -89,6 +90,7 @@ function try_alchemy(_action, _inputs) {
 
 	inventory_add_outputs(recipe.outputs);
 	global.last_message = "Alchemy succeeded.";
+	audio_play_sound(snd_alchemy_success, 1, false);
 	return true;
 
 }
@@ -96,7 +98,7 @@ function try_alchemy(_action, _inputs) {
 function rewind_failure(_failure_index) {
     if (_failure_index < 0 || _failure_index >= array_length(global.failure_items)) return false;
 
-    if (!stone_spend_charge(1)) {
+    if (!stone_spend_charge(2)) {
         global.last_message = "Not enough charge to rewind.";
         return false;
     }
@@ -109,6 +111,7 @@ function rewind_failure(_failure_index) {
 
     array_delete(global.failure_items, _failure_index, 1);
     global.last_message = "Failure rewound.";
+	audio_play_sound(snd_rewind, 1, false);
     return true;
 }
 
@@ -127,16 +130,19 @@ function action_name(_action) {
 function recharge_stone_with_heart() {
     if (!inventory_has(Material.Heart, 1)) {
         global.last_message = "You do not have a heart.";
+        audio_play_sound(snd_nocharge, 1, false);
         return false;
     }
 
     if (global.stone_charge >= global.stone_max_charge) {
         global.last_message = "Stone is already fully charged.";
+        audio_play_sound(snd_nocharge, 1, false);
         return false;
     }
 
     inventory_remove(Material.Heart, 1);
     global.stone_charge = min(global.stone_max_charge, global.stone_charge + 3);
     global.last_message = "Stone recharged.";
+    audio_play_sound(snd_recharge, 1, false);
     return true;
 }

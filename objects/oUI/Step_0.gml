@@ -1,6 +1,25 @@
 var mx = mouse_x;
 var my = mouse_y;
 
+
+// -------------------------
+// GAME STATE HANDLING
+// -------------------------
+if (global.game_state == "title") {
+    if (keyboard_check_pressed(vk_space) || mouse_check_button_pressed(mb_left)) {
+        global.game_state = "play";
+    }
+    exit;
+}
+
+if (global.game_state == "gameover") {
+    if (keyboard_check_pressed(ord("R")) || mouse_check_button_pressed(mb_left)) {
+        room_restart();
+    }
+    exit;
+}
+
+
 // dialogue typewriter reset when line changes
 if (global.npc_line != ui_last_dialog_line) {
     ui_last_dialog_line = global.npc_line;
@@ -44,6 +63,7 @@ if (keyboard_check_pressed(ord("Q"))) {
     book_tab = 0;
     ui_page_scroll = 0;
     global.last_message = "Opened Quests page.";
+    audio_play_sound(snd_page_turn, 1, false);
 
     if (!instance_exists(oPageTurn) && instance_exists(oBook)) {
         instance_create_depth(oBook.x, oBook.y, -10, oPageTurn);
@@ -54,6 +74,7 @@ if (keyboard_check_pressed(ord("R"))) {
     book_tab = 1;
     ui_page_scroll = 0;
     global.last_message = "Opened Recipes page.";
+    audio_play_sound(snd_page_turn, 1, false);
 
     if (!instance_exists(oPageTurn) && instance_exists(oBook)) {
         instance_create_depth(oBook.x, oBook.y, -10, oPageTurn);
@@ -64,6 +85,7 @@ if (keyboard_check_pressed(ord("M"))) {
     book_tab = 2;
     ui_page_scroll = 0;
     global.last_message = "Opened Materials page.";
+    audio_play_sound(snd_page_turn, 1, false);
 
     if (!instance_exists(oPageTurn) && instance_exists(oBook)) {
         instance_create_depth(oBook.x, oBook.y, -10, oPageTurn);
@@ -76,6 +98,7 @@ if (keyboard_check_pressed(ord("M"))) {
 if (keyboard_check_pressed(ord("1"))) {
     global.selected_action = AlchemyAction.Separate;
     global.last_message = "Selected action: " + action_name(global.selected_action);
+    audio_play_sound(snd_page_turn, 1, false);
 
     if (!instance_exists(oPageTurn) && instance_exists(oBook)) {
         instance_create_depth(oBook.x, oBook.y, -10, oPageTurn);
@@ -85,6 +108,7 @@ if (keyboard_check_pressed(ord("1"))) {
 if (keyboard_check_pressed(ord("2"))) {
     global.selected_action = AlchemyAction.Combine;
     global.last_message = "Selected action: " + action_name(global.selected_action);
+    audio_play_sound(snd_page_turn, 1, false);
 
     if (!instance_exists(oPageTurn) && instance_exists(oBook)) {
         instance_create_depth(oBook.x, oBook.y, -10, oPageTurn);
@@ -94,6 +118,7 @@ if (keyboard_check_pressed(ord("2"))) {
 if (keyboard_check_pressed(ord("3"))) {
     global.selected_action = AlchemyAction.Heat;
     global.last_message = "Selected action: " + action_name(global.selected_action);
+    audio_play_sound(snd_page_turn, 1, false);
 
     if (!instance_exists(oPageTurn) && instance_exists(oBook)) {
         instance_create_depth(oBook.x, oBook.y, -10, oPageTurn);
@@ -103,6 +128,7 @@ if (keyboard_check_pressed(ord("3"))) {
 if (keyboard_check_pressed(ord("4"))) {
     global.selected_action = AlchemyAction.Cold;
     global.last_message = "Selected action: " + action_name(global.selected_action);
+    audio_play_sound(snd_page_turn, 1, false);
 
     if (!instance_exists(oPageTurn) && instance_exists(oBook)) {
         instance_create_depth(oBook.x, oBook.y, -10, oPageTurn);
@@ -112,6 +138,7 @@ if (keyboard_check_pressed(ord("4"))) {
 if (keyboard_check_pressed(ord("5"))) {
     global.selected_action = AlchemyAction.Rewind;
     global.last_message = "Selected action: " + action_name(global.selected_action);
+    audio_play_sound(snd_page_turn, 1, false);
 
     if (!instance_exists(oPageTurn) && instance_exists(oBook)) {
         instance_create_depth(oBook.x, oBook.y, -10, oPageTurn);
@@ -196,20 +223,21 @@ if (book_tab == 2) {
             }
         }
     } else {
-		for (var f = 0; f < array_length(global.failure_items); f++) {
-		    var fy = ui_page_content_y + f * 18;
+        for (var f = 0; f < array_length(global.failure_items); f++) {
+            var fy = ui_page_content_y + f * 18;
 
-		    if (point_in_rectangle(mx, my, ui_page_content_x, fy, ui_page_content_x + 90, fy + 12)) {
-		        global.hovered_failure = f;
+            if (point_in_rectangle(mx, my, ui_page_content_x, fy, ui_page_content_x + 90, fy + 12)) {
+                global.hovered_failure = f;
 
-		        if (mouse_check_button_pressed(mb_left)) {
-		            global.selected_failure_index = f;
-		            global.last_message = "Selected failure.";
-		        }
-		    }
-		}
+                if (mouse_check_button_pressed(mb_left)) {
+                    global.selected_failure_index = f;
+                    global.last_message = "Selected failure.";
+                }
+            }
+        }
     }
 }
+
 // -------------------------
 // HOVER RECIPE PAGE
 // -------------------------
@@ -245,25 +273,26 @@ if (book_tab == 1) {
 // LEFT CLICK HANDLING
 // -------------------------
 if (mouse_check_button_pressed(mb_left)) {
-	
-	// faerie confirm popup buttons
-	if (ui_faerie_confirm) {
-	    if (point_in_rectangle(mx, my, ui_faerie_yes_x1, ui_faerie_yes_y1, ui_faerie_yes_x2, ui_faerie_yes_y2)) {
-	        ui_faerie_confirm = false;
 
-	        if (!ui_faerie_popup_active && global.inventory[Material.FaerieJar] > 0) {
-	            inventory_remove(Material.FaerieJar, 1);
-	            ui_faerie_popup_active = true;
-	            ui_faerie_popup_frame = 0;
-	        }
-	        exit;
-	    }
+    // faerie confirm popup buttons
+    if (ui_faerie_confirm) {
+        if (point_in_rectangle(mx, my, ui_faerie_yes_x1, ui_faerie_yes_y1, ui_faerie_yes_x2, ui_faerie_yes_y2)) {
+            ui_faerie_confirm = false;
 
-	    if (point_in_rectangle(mx, my, ui_faerie_no_x1, ui_faerie_no_y1, ui_faerie_no_x2, ui_faerie_no_y2)) {
-	        ui_faerie_confirm = false;
-	        exit;
-	    }
-	}
+            if (!ui_faerie_popup_active && global.inventory[Material.FaerieJar] > 0) {
+                inventory_remove(Material.FaerieJar, 1);
+                ui_faerie_popup_active = true;
+                ui_faerie_popup_frame = 0;
+                audio_play_sound(snd_faerie_kill, 1, false);
+            }
+            exit;
+        }
+
+        if (point_in_rectangle(mx, my, ui_faerie_no_x1, ui_faerie_no_y1, ui_faerie_no_x2, ui_faerie_no_y2)) {
+            ui_faerie_confirm = false;
+            exit;
+        }
+    }
 
     // click dialogue box: reveal text or move to next quest
     if (global.dialog_visible && array_length(global.active_quests) > 0) {
@@ -286,24 +315,36 @@ if (mouse_check_button_pressed(mb_left)) {
             }
         }
     }
-	// materials/failures sub-mode toggle
-	if (book_tab == 2) {
-	    if (point_in_rectangle(mx, my,
-	        ui_submode_arrow_left_x, ui_submode_arrow_left_y,
-	        ui_submode_arrow_left_x + ui_submode_arrow_w, ui_submode_arrow_left_y + ui_submode_arrow_h)) {
 
-	        ui_materials_mode = max(0, ui_materials_mode - 1);
-	        exit;
-	    }
+    // materials/failures sub-mode toggle
+    if (book_tab == 2) {
+        if (point_in_rectangle(mx, my,
+            ui_submode_arrow_left_x, ui_submode_arrow_left_y,
+            ui_submode_arrow_left_x + ui_submode_arrow_w, ui_submode_arrow_left_y + ui_submode_arrow_h)) {
 
-	    if (point_in_rectangle(mx, my,
-	        ui_submode_arrow_right_x, ui_submode_arrow_right_y,
-	        ui_submode_arrow_right_x + ui_submode_arrow_w, ui_submode_arrow_right_y + ui_submode_arrow_h)) {
+            ui_materials_mode = max(0, ui_materials_mode - 1);
+            audio_play_sound(snd_page_turn, 1, false);
 
-	        ui_materials_mode = min(1, ui_materials_mode + 1);
-	        exit;
-	    }
-	}
+            if (!instance_exists(oPageTurn) && instance_exists(oBook)) {
+                instance_create_depth(oBook.x, oBook.y, -10, oPageTurn);
+            }
+            exit;
+        }
+
+        if (point_in_rectangle(mx, my,
+            ui_submode_arrow_right_x, ui_submode_arrow_right_y,
+            ui_submode_arrow_right_x + ui_submode_arrow_w, ui_submode_arrow_right_y + ui_submode_arrow_h)) {
+
+            ui_materials_mode = min(1, ui_materials_mode + 1);
+            audio_play_sound(snd_page_turn, 1, false);
+
+            if (!instance_exists(oPageTurn) && instance_exists(oBook)) {
+                instance_create_depth(oBook.x, oBook.y, -10, oPageTurn);
+            }
+            exit;
+        }
+    }
+
     // action arrows
     if (point_in_rectangle(mx, my,
         ui_action_arrow_left_x, ui_action_arrow_left_y,
@@ -312,6 +353,7 @@ if (mouse_check_button_pressed(mb_left)) {
         global.selected_action -= 1;
         if (global.selected_action < 0) global.selected_action = AlchemyAction.Rewind;
         global.last_message = "Selected action: " + action_name(global.selected_action);
+        audio_play_sound(snd_page_turn, 1, false);
 
         if (!instance_exists(oPageTurn) && instance_exists(oBook)) {
             instance_create_depth(oBook.x, oBook.y, -10, oPageTurn);
@@ -326,6 +368,7 @@ if (mouse_check_button_pressed(mb_left)) {
         global.selected_action += 1;
         if (global.selected_action > AlchemyAction.Rewind) global.selected_action = 0;
         global.last_message = "Selected action: " + action_name(global.selected_action);
+        audio_play_sound(snd_page_turn, 1, false);
 
         if (!instance_exists(oPageTurn) && instance_exists(oBook)) {
             instance_create_depth(oBook.x, oBook.y, -10, oPageTurn);
@@ -338,6 +381,7 @@ if (mouse_check_button_pressed(mb_left)) {
         book_tab = 0;
         ui_page_scroll = 0;
         global.last_message = "Opened Quests page.";
+        audio_play_sound(snd_page_turn, 1, false);
 
         if (!instance_exists(oPageTurn) && instance_exists(oBook)) {
             instance_create_depth(oBook.x, oBook.y, -10, oPageTurn);
@@ -349,6 +393,7 @@ if (mouse_check_button_pressed(mb_left)) {
         book_tab = 1;
         ui_page_scroll = 0;
         global.last_message = "Opened Recipes page.";
+        audio_play_sound(snd_page_turn, 1, false);
 
         if (!instance_exists(oPageTurn) && instance_exists(oBook)) {
             instance_create_depth(oBook.x, oBook.y, -10, oPageTurn);
@@ -360,6 +405,7 @@ if (mouse_check_button_pressed(mb_left)) {
         book_tab = 2;
         ui_page_scroll = 0;
         global.last_message = "Opened Materials page.";
+        audio_play_sound(snd_page_turn, 1, false);
 
         if (!instance_exists(oPageTurn) && instance_exists(oBook)) {
             instance_create_depth(oBook.x, oBook.y, -10, oPageTurn);
@@ -401,6 +447,7 @@ if (mouse_check_button_pressed(mb_left)) {
                 }
 
                 global.last_message = "Quest accepted.";
+                audio_play_sound(snd_accept, 1, false);
                 exit;
             }
         }
@@ -413,8 +460,8 @@ if (mouse_check_button_pressed(mb_left)) {
         }
     }
 
-	//knife kill faerie
-	if (instance_exists(oKnifeMarker) && global.inventory[Material.FaerieJar] > 0) {
+	// knife kill faerie
+	if (!global.dialog_visible && instance_exists(oKnifeMarker) && global.inventory[Material.FaerieJar] > 0) {
 	    if (collision_point(mx, my, oKnifeMarker, false, true)) {
 	        ui_faerie_confirm = true;
 	        exit;
@@ -434,8 +481,7 @@ if (ui_faerie_frame >= sprite_get_number(sFaerie)) {
     ui_faerie_frame = 0;
 }
 
-
-
+// faerie kill animation
 if (ui_faerie_popup_active) {
     ui_faerie_popup_frame += ui_faerie_popup_speed;
 

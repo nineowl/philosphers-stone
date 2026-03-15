@@ -205,6 +205,12 @@ function init_material_data() {
 	    spr: sMaterials,
 	    frame: 37
 	};
+	    data[Material.PhilosopherStone] = { 
+		name: "Philosopher Stone",
+		desc: "A better stone at last.",
+	    spr: sMaterials,
+	    frame: 37
+	};
 
     return data;
 }

@@ -10,7 +10,7 @@
   "compression":0,
   "compressionQuality":4,
   "conversionMode":0,
-  "duration":2.3269162,
+  "duration":1.519229,
   "exportDir":"",
   "name":"snd_page_turn",
   "parent":{

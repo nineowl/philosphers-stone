@@ -1,4 +1,58 @@
 if (!variable_global_exists("stone_charge")) exit;
+// -------------------------
+// TITLE SCREEN
+// -------------------------
+if (global.game_state == "title") {
+    draw_set_alpha(0.85);
+    draw_set_color(c_black);
+    draw_rectangle(0, 0, room_width, room_height, false);
+
+    draw_set_alpha(1);
+    draw_set_halign(fa_center);
+    draw_set_valign(fa_middle);
+
+    draw_set_font(global.font_title);
+    draw_set_color(c_white);
+    draw_text(room_width * 0.5, room_height * 0.35, global.title_text);
+
+    draw_set_font(global.font_book);
+    draw_text(room_width * 0.5, room_height * 0.45, global.title_subtext);
+
+    draw_set_font(global.font_small);
+    draw_text(room_width * 0.5, room_height * 0.62, global.title_prompt);
+	
+	draw_text(room_width * 0.5, room_height * 0.70, global.title_help);
+
+    draw_set_halign(fa_left);
+    draw_set_valign(fa_top);
+	
+    exit;
+}
+
+// -------------------------
+// GAME OVER SCREEN
+// -------------------------
+if (global.game_state == "gameover") {
+    draw_set_alpha(0.85);
+    draw_set_color(c_black);
+    draw_rectangle(0, 0, room_width, room_height, false);
+
+    draw_set_alpha(1);
+    draw_set_halign(fa_center);
+    draw_set_valign(fa_middle);
+
+    draw_set_font(global.font_title);
+    draw_set_color(c_white);
+    draw_text(room_width * 0.5, room_height * 0.42, global.gameover_title);
+
+    draw_set_font(global.font_small);
+    draw_text(room_width * 0.5, room_height * 0.58, global.gameover_prompt);
+
+    draw_set_halign(fa_left);
+    draw_set_valign(fa_top);
+    exit;
+}
+
 
 // philosopher stone
 draw_sprite_ext(
@@ -63,7 +117,7 @@ switch (book_tab) {
 
             if (quest.stage == "offer") {
                 draw_rectangle(ui_accept_x1, ui_accept_y1, ui_accept_x2, ui_accept_y2, true);
-                draw_text(ui_accept_x1 + 8, ui_accept_y1 + 6, "ACCEPT");
+                draw_text(ui_accept_x1 + 2, ui_accept_y1 + 2, "ACCEPT");
             }
 
             if (quest.stage == "accepted") {
@@ -402,6 +456,6 @@ if (ui_faerie_popup_active) {
 draw_set_font(global.font_small);
 draw_set_color(c_white);
 draw_rectangle(ui_recharge_x1, ui_recharge_y1, ui_recharge_x2, ui_recharge_y2, true);
-draw_text(ui_recharge_x1 + 4, ui_recharge_y1 + 4, "RECHARGE");
+draw_text(ui_recharge_x1 + 2, ui_recharge_y1 + 2, "RECHARGE");
 
 
